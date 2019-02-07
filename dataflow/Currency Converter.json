@@ -27,7 +27,7 @@
 					"type": "DatasetReference"
 				},
 				"name": "USDSink",
-				"script": "ConditionalSplit1@USD sink(saveMode:'overwrite' ) ~> USDSink"
+				"script": "ConditionalSplit1@USD sink(saveMode:'overwrite') ~> USDSink"
 			},
 			{
 				"dataset": {
@@ -35,7 +35,7 @@
 					"type": "DatasetReference"
 				},
 				"name": "CADSink",
-				"script": "ConditionalSplit1@CAD sink(saveMode:'overwrite' ) ~> CADSink"
+				"script": "ConditionalSplit1@CAD sink(saveMode:'overwrite') ~> CADSink"
 			}
 		],
 		"transformations": [

@@ -27,7 +27,7 @@
 					"type": "DatasetReference"
 				},
 				"name": "VendorStatsSink",
-				"script": "AggregateVendorStats sink(saveMode:'overwrite' ) ~> VendorStatsSink"
+				"script": "AggregateVendorStats sink(saveMode:'overwrite') ~> VendorStatsSink"
 			},
 			{
 				"dataset": {
@@ -35,7 +35,7 @@
 					"type": "DatasetReference"
 				},
 				"name": "DayStatsSink",
-				"script": "AggregateDayStats sink(saveMode:'overwrite' ) ~> DayStatsSink"
+				"script": "AggregateDayStats sink(saveMode:'overwrite') ~> DayStatsSink"
 			},
 			{
 				"dataset": {
@@ -43,7 +43,7 @@
 					"type": "DatasetReference"
 				},
 				"name": "TotalPaymentByPaymentType",
-				"script": "AggregateByPaymentType sink(saveMode:'overwrite' ) ~> TotalPaymentByPaymentType"
+				"script": "AggregateByPaymentType sink(saveMode:'overwrite') ~> TotalPaymentByPaymentType"
 			}
 		],
 		"transformations": [

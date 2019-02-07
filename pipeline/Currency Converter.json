@@ -13,7 +13,7 @@
 				},
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Currency Converter",
+						"referenceName": "TaxiDemo",
 						"type": "DataFlowReference"
 					},
 					"linkedService": {

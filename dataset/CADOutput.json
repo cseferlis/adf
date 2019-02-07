@@ -2,7 +2,7 @@
 	"name": "CADOutput",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "df_demo",
+			"referenceName": "MyAzureBlobLinkedService",
 			"type": "LinkedServiceReference"
 		},
 		"type": "AzureBlob",
@@ -17,7 +17,7 @@
 				"firstRowAsHeader": false
 			},
 			"fileName": "",
-			"folderPath": "dataflows/currency"
+			"folderPath": "demo/output/currency"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"

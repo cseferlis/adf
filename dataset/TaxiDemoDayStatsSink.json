@@ -2,7 +2,7 @@
 	"name": "TaxiDemoDayStatsSink",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "df_demo",
+			"referenceName": "MyAzureBlobLinkedService",
 			"type": "LinkedServiceReference"
 		},
 		"type": "AzureBlob",

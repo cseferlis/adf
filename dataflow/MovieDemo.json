@@ -19,7 +19,7 @@
 					"type": "DatasetReference"
 				},
 				"name": "Output",
-				"script": "MoviesYear sink(saveMode:'overwrite' ) ~> Output"
+				"script": "MoviesYear sink(saveMode:'overwrite') ~> Output"
 			}
 		],
 		"transformations": [

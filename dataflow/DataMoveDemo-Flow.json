@@ -1,0 +1,21 @@
+{
+	"name": "DataMoveDemo-Flow",
+	"properties": {
+		"sources": [
+			{
+				"dataset": {
+					"referenceName": "Customer",
+					"type": "DatasetReference"
+				},
+				"name": "sqldbAWLT",
+				"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> sqldbAWLT"
+			}
+		],
+		"userDependencies": {
+			"linkedService": {
+				"referenceName": "sqldbAWLT",
+				"type": "LinkedServiceReference"
+			}
+		}
+	}
+}
