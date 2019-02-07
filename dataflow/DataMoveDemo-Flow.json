@@ -17,6 +17,14 @@
 				},
 				"name": "sqldbAWLTAddress",
 				"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> sqldbAWLTAddress"
+			},
+			{
+				"dataset": {
+					"referenceName": "CustomerAddress",
+					"type": "DatasetReference"
+				},
+				"name": "sqldbAWLTCustomerAddress",
+				"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> sqldbAWLTCustomerAddress"
 			}
 		],
 		"userDependencies": {
