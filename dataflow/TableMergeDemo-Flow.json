@@ -46,7 +46,7 @@
 				},
 				{
 					"name": "Join2",
-					"script": "Join1, Address join(CustomerAddress@AddressID == Address@AddressID,\n\tjoinType:'outer',\n\tbroadcast: 'none')~> Join2"
+					"script": "Join1, Address join(CustomerAddress@AddressID == Address@AddressID,\n\tjoinType:'left',\n\tbroadcast: 'none')~> Join2"
 				}
 			]
 		}
