@@ -1,0 +1,72 @@
+{
+	"name": "CustomerAddressMerged",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "src_sqldbAWLT",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "CustomerID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CompanyName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Title",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FirstName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MiddleName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LastName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EmailAddress",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Phone",
+				"type": "varchar"
+			},
+			{
+				"name": "AddressLine1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AddressLine2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "City",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StateProvince",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CountryRegion",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PostalCode",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"tableName": "[dbo].[CustomerAddressMerged]"
+		}
+	}
+}
