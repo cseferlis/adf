@@ -1,37 +1,34 @@
 {
 	"name": "DataMoveDemo-Flow",
 	"properties": {
-		"sources": [
-			{
-				"dataset": {
-					"referenceName": "Customer",
-					"type": "DatasetReference"
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "Customer",
+					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> Customer"
 				},
-				"name": "sqldbAWLTCustomer",
-				"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> sqldbAWLTCustomer"
-			},
-			{
-				"dataset": {
-					"referenceName": "Address",
-					"type": "DatasetReference"
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable3",
+						"type": "DatasetReference"
+					},
+					"name": "Address",
+					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> Address"
 				},
-				"name": "sqldbAWLTAddress",
-				"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> sqldbAWLTAddress"
-			},
-			{
-				"dataset": {
-					"referenceName": "CustomerAddress",
-					"type": "DatasetReference"
-				},
-				"name": "sqldbAWLTCustomerAddress",
-				"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> sqldbAWLTCustomerAddress"
-			}
-		],
-		"userDependencies": {
-			"linkedService": {
-				"referenceName": "sqldbAWLT",
-				"type": "LinkedServiceReference"
-			}
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerAddress",
+					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> CustomerAddress"
+				}
+			]
 		}
 	}
 }

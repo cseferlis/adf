@@ -1,0 +1,14 @@
+{
+	"name": "AzureSqlTable3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "src_sqldbAWLT",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "[SalesLT].[Address]"
+		}
+	}
+}
