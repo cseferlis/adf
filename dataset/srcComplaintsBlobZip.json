@@ -1,0 +1,15 @@
+{
+	"name": "srcComplaintsBlobZip",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ComplaintsBlobZip",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": "FLAT_CMPL.zip",
+			"folderPath": "adfdemoblob/downloads/folders/Complaints"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

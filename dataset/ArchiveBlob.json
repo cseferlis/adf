@@ -1,0 +1,18 @@
+{
+	"name": "ArchiveBlob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Archive Blob Container",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": {
+				"value": "@concat('FLAT_CMPL',string(utcnow()),'.zip')",
+				"type": "Expression"
+			},
+			"folderPath": "complaintsarchive"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

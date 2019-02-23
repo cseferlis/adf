@@ -1,0 +1,15 @@
+{
+	"name": "srcComplaintsHttpZip",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ComplaintsSourceZip",
+			"type": "LinkedServiceReference"
+		},
+		"type": "HttpFile",
+		"typeProperties": {
+			"relativeUrl": "/downloads/folders/Complaints/FLAT_CMPL.zip",
+			"requestMethod": "Get"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

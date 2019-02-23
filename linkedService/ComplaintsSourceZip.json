@@ -1,0 +1,13 @@
+{
+	"name": "ComplaintsSourceZip",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://www-odi.nhtsa.dot.gov",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"username": ""
+		}
+	}
+}

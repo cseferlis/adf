@@ -1,0 +1,15 @@
+{
+	"name": "destComplaintsZipBlob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ComplaintsBlobZip",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureBlob",
+		"typeProperties": {
+			"fileName": "",
+			"folderPath": "adfdemoblob"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
