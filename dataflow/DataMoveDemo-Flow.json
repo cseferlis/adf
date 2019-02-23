@@ -6,23 +6,23 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable2",
+						"referenceName": "Customer",
 						"type": "DatasetReference"
 					},
 					"name": "Customer",
-					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> Customer"
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> Customer"
 				},
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable3",
+						"referenceName": "Address",
 						"type": "DatasetReference"
 					},
 					"name": "Address",
-					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> Address"
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table') ~> Address"
 				},
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable4",
+						"referenceName": "CustomerAddress",
 						"type": "DatasetReference"
 					},
 					"name": "CustomerAddress",

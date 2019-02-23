@@ -1,5 +1,5 @@
 {
-	"name": "CustomerAddress",
+	"name": "Customer",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "src_sqldbAWLT",
@@ -8,7 +8,8 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "[SalesLT].[CustomerAddress]"
+			"tableName": "[SalesLT].[Customer]"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }
