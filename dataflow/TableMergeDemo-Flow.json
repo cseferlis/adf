@@ -42,7 +42,7 @@
 			"transformations": [
 				{
 					"name": "Join1",
-					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'both')~> Join1"
+					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'both')~> Join1"
 				},
 				{
 					"name": "Join2",
