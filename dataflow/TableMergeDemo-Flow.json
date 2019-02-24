@@ -45,12 +45,12 @@
 					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'both')~> Join1"
 				},
 				{
-					"name": "Join2",
-					"script": "Select1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'left',\n\tbroadcast: 'both')~> Join2"
+					"name": "Select1",
+					"script": "Join1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tSuffix,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t),\n\tpartitionBy('hash', 1))~> Select1"
 				},
 				{
-					"name": "Select1",
-					"script": "Join1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tSuffix,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t))~> Select1"
+					"name": "Join2",
+					"script": "Select1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'inner',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'both')~> Join2"
 				}
 			]
 		}
