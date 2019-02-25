@@ -10,7 +10,7 @@
 						"type": "DatasetReference"
 					},
 					"name": "Customer",
-					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tformat: 'table') ~> Customer"
+					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Customer"
 				},
 				{
 					"dataset": {
@@ -18,7 +18,7 @@
 						"type": "DatasetReference"
 					},
 					"name": "Address",
-					"script": "source(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Address"
+					"script": "source(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Address"
 				},
 				{
 					"dataset": {
@@ -26,7 +26,7 @@
 						"type": "DatasetReference"
 					},
 					"name": "CustomerAddress",
-					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tformat: 'table') ~> CustomerAddress"
+					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> CustomerAddress"
 				}
 			],
 			"sinks": [
@@ -36,25 +36,21 @@
 						"type": "DatasetReference"
 					},
 					"name": "CustomerAddressMerged",
-					"script": "Select2 sink(input(\n\t\tCustomerID as integer,\n\t\tCompanyName as string,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tstaged: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true) ~> CustomerAddressMerged"
+					"script": "Join2 sink(input(\n\t\tCustomerID as integer,\n\t\tCompanyName as string,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tstaged: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tmapColumn(\n\t\tCustomerID = CustomerAddressMerged@{Select1@CustomerID},\n\t\tCompanyName,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t),\n\tpartitionBy('hash', 1),\n\tpartitionFileNames:[''],\n\ttruncate:true) ~> CustomerAddressMerged"
 				}
 			],
 			"transformations": [
 				{
 					"name": "Join1",
-					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join1"
-				},
-				{
-					"name": "Select1",
-					"script": "Join1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t))~> Select1"
+					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'both')~> Join1"
 				},
 				{
 					"name": "Join2",
-					"script": "Select1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join2"
+					"script": "Select1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'left',\n\tbroadcast: 'both')~> Join2"
 				},
 				{
-					"name": "Select2",
-					"script": "Join2 select(mapColumn(\n\t\tCustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t))~> Select2"
+					"name": "Select1",
+					"script": "Join1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tSuffix,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t))~> Select1"
 				}
 			]
 		}

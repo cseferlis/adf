@@ -40,5 +40,6 @@
 		"typeProperties": {
 			"tableName": "[SalesLT].[CustomerAddress]"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

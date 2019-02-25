@@ -1,0 +1,15 @@
+{
+	"name": "AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "src_sqldbAWLT",
+			"type": "LinkedServiceReference"
+		},
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "[SalesLT].[Customer]"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

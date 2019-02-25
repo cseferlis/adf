@@ -68,5 +68,6 @@
 		"typeProperties": {
 			"tableName": "[dbo].[CustomerAddressMerged]"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }
