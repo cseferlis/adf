@@ -2,6 +2,9 @@
 	"name": "TaxiDemo",
 	"properties": {
 		"description": "Sample demo data flow to transform taxi data showing usage of join and aggregate transformation.",
+		"folder": {
+			"name": "DF Demo Templates"
+		},
 		"type": "MappingDataFlow"
 	}
 }
