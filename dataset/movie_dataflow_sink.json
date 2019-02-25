@@ -5,6 +5,9 @@
 			"referenceName": "MyAzureBlobLinkedService",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "DF Demo Templates"
+		},
 		"type": "AzureBlob",
 		"typeProperties": {
 			"format": {

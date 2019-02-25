@@ -5,6 +5,9 @@
 			"referenceName": "cseferlistestdb1",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "SR"
+		},
 		"type": "AzureSqlTable",
 		"structure": [
 			{

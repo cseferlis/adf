@@ -2,6 +2,9 @@
 	"name": "MovieDemo",
 	"properties": {
 		"description": "Sample demo data flow to transform movie data showing usage of derive transformation.",
+		"folder": {
+			"name": "DF Demo Templates"
+		},
 		"type": "MappingDataFlow"
 	}
 }

@@ -317,6 +317,9 @@
 				"type": "String",
 				"defaultValue": "cseferlis@gmail.com"
 			}
+		},
+		"folder": {
+			"name": "SR"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"

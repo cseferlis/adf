@@ -5,6 +5,9 @@
 			"referenceName": "srcComplaintsBlob",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "SR"
+		},
 		"type": "AzureBlob",
 		"structure": [
 			{

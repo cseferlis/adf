@@ -1,6 +1,9 @@
 {
 	"name": "Calculate Estimated Profit",
 	"properties": {
+		"folder": {
+			"name": "ADF DataFlows Demos"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

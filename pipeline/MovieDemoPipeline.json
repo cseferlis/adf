@@ -19,10 +19,19 @@
 					"linkedService": {
 						"referenceName": "MyDataBricksLinkedService",
 						"type": "LinkedServiceReference"
+					},
+					"compute": {
+						"computeType": "General",
+						"dataTransformationUnits": 4,
+						"coreCount": 8,
+						"numberOfNodes": 0
 					}
 				}
 			}
-		]
+		],
+		"folder": {
+			"name": "DF Demo Templates"
+		}
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

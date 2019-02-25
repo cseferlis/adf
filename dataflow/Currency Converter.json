@@ -2,6 +2,9 @@
 	"name": "Currency Converter",
 	"properties": {
 		"description": "Sample demo data flow to convert currencies showing usage of union, derive and conditional split transformation.",
+		"folder": {
+			"name": "DF Demo Templates"
+		},
 		"type": "MappingDataFlow"
 	}
 }

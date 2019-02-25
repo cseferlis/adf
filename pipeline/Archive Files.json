@@ -37,7 +37,10 @@
 					}
 				]
 			}
-		]
+		],
+		"folder": {
+			"name": "SR"
+		}
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

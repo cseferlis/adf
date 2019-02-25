@@ -5,6 +5,9 @@
 			"referenceName": "Archive Blob Container",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "SR"
+		},
 		"type": "AzureBlob",
 		"typeProperties": {
 			"fileName": {
