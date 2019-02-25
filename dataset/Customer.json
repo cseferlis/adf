@@ -5,6 +5,9 @@
 			"referenceName": "src_sqldbAWLT",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "ADF Dataset Demos"
+		},
 		"type": "AzureSqlTable",
 		"schema": [
 			{
