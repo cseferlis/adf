@@ -5,6 +5,9 @@
 			"referenceName": "ComplaintsSourceZip",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "SR"
+		},
 		"type": "HttpFile",
 		"typeProperties": {
 			"relativeUrl": "/downloads/folders/Complaints/FLAT_CMPL.zip",
