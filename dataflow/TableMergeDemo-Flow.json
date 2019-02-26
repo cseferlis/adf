@@ -13,7 +13,7 @@
 						"type": "DatasetReference"
 					},
 					"name": "Customer",
-					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Customer"
+					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 1000,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Customer"
 				},
 				{
 					"dataset": {
@@ -29,7 +29,7 @@
 						"type": "DatasetReference"
 					},
 					"name": "CustomerAddress",
-					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> CustomerAddress"
+					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 1000,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> CustomerAddress"
 				}
 			],
 			"sinks": [
@@ -45,7 +45,7 @@
 			"transformations": [
 				{
 					"name": "Join1",
-					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'both')~> Join1"
+					"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'both')~> Join1"
 				},
 				{
 					"name": "Join2",
