@@ -1,0 +1,50 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy from HTTP to Blob",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "/downloads/folders/Complaints/FLAT_CMPL.zip"
+					},
+					{
+						"name": "Destination",
+						"value": "adfdemoblob/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "HttpSource",
+						"httpRequestTimeout": "0.00:00:00"
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true
+				},
+				"inputs": [
+					{
+						"referenceName": "srcComplaintsHttpZip",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "destComplaintsZipBlob",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
