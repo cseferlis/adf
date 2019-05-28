@@ -26,7 +26,8 @@
 					"sink": {
 						"type": "BlobSink"
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true
 				},
 				"inputs": [
 					{
