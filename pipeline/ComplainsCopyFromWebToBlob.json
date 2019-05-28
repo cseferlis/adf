@@ -26,14 +26,7 @@
 					"sink": {
 						"type": "BlobSink"
 					},
-					"enableStaging": true,
-					"stagingSettings": {
-						"linkedServiceName": {
-							"referenceName": "staging",
-							"type": "LinkedServiceReference"
-						},
-						"path": "adfdemoblob"
-					},
+					"enableStaging": false,
 					"dataIntegrationUnits": 0
 				},
 				"inputs": [
