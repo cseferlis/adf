@@ -219,13 +219,7 @@
 					}
 				]
 			}
-		],
-		"parameters": {
-			"receiver": {
-				"type": "String",
-				"defaultValue": "cseferlis@gmail.com"
-			}
-		}
+		]
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
