@@ -205,7 +205,7 @@
 			}
 		],
 		"typeProperties": {
-			"tableName": "[dbo].[CMPL_Temp]"
+			"tableName": "[dbo].[FLAT_CMPL]"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
