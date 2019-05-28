@@ -26,8 +26,7 @@
 					"sink": {
 						"type": "BlobSink"
 					},
-					"enableStaging": false,
-					"dataIntegrationUnits": 0
+					"enableStaging": false
 				},
 				"inputs": [
 					{
