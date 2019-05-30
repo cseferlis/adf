@@ -1,0 +1,789 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "cbsADFDemo"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ComplainsCopyFromWebToBlob')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy from HTTP to Blob",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate CMPL Temp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"typeProperties": {
+							"source": {
+								"type": "HttpSource",
+								"httpRequestTimeout": "0.00:00:00"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsHttpZip",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "destComplaintsZipBlob",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Extract Text File To Temp Table",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Copy from HTTP to Blob",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": false
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 100000
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"translator": {
+								"type": "TabularTranslator",
+								"columnMappings": {
+									"CMPLID": "CMPLID",
+									"ODINO": "ODINO",
+									"MFR_NAME": "MFR_NAME",
+									"MAKETXT": "MAKETXT",
+									"MODELTXT": "MODELTXT",
+									"YEARTXT": "YEARTXT",
+									"CRASH": "CRASH",
+									"FAILDATE": "FAILDATE",
+									"FIRE": "FIRE",
+									"INJURED": "INJURED",
+									"DEATHS": "DEATHS",
+									"COMPDESC": "COMPDESC",
+									"CITY": "CITY",
+									"STATE": "STATE",
+									"VIN": "VIN",
+									"DATEA": "DATEA",
+									"LDATE": "LDATE",
+									"MILES": "MILES",
+									"OCCURENCES": "OCCURENCES",
+									"CDESCR": "CDESCR",
+									"CMPL_TYPE": "CMPL_TYPE",
+									"POLICE_RPT_YN": "POLICE_RPT_YN",
+									"PURCH_DT": "PURCH_DT",
+									"ORIG_OWNER_YN": "ORIG_OWNER_YN",
+									"ANTI_BRAKES_YN": "ANTI_BRAKES_YN",
+									"CRUISE_CONT_YN": "CRUISE_CONT_YN",
+									"NUM_CYLS": "NUM_CYLS",
+									"DRIVE_TRAIN": "DRIVE_TRAIN",
+									"FUEL_SYS": "FUEL_SYS",
+									"FUEL_TYPE": "FUEL_TYPE",
+									"TRANS_TYPE": "TRANS_TYPE",
+									"VEH_SPEED": "VEH_SPEED",
+									"DOT": "DOT",
+									"TIRE_SIZE": "TIRE_SIZE",
+									"LOC_OF_TIRE": "LOC_OF_TIRE",
+									"TIRE_FAIL_TYPE": "TIRE_FAIL_TYPE",
+									"ORIG_EQUIP_YN": "ORIG_EQUIP_YN",
+									"MANUF_DT": "MANUF_DT",
+									"SEAT_TYPE": "SEAT_TYPE",
+									"RESTRAINT_TYPE": "RESTRAINT_TYE",
+									"DEALER_NAME": "DEALER_NAME",
+									"DEALER_TEL": "DEALER_TEL",
+									"DEALER_CITY": "DEALER_CITY",
+									"DEALER_STATE": "DEALER_STATE",
+									"DEALER_ZIP": "DEALER_ZIP",
+									"PROD_TYPE": "PROD_TYPE",
+									"REPAIRED_YN": "REPAIRED_YN",
+									"MEDICAL_ATTN": "MEDICAL_ATTN",
+									"VEHICLES_TOWED_YN": "VEHICLES_TOWED_YN"
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlob",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "destComplaintsSQLTempTbl",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Truncate CMPL Temp",
+						"type": "SqlServerStoredProcedure",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[sp_Truncate_CMPL_Temp]"
+						},
+						"linkedServiceName": {
+							"referenceName": "cseferlistestdb1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Insert New and Changed Records",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Extract Text File To Temp Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[sp_Insert_New_and_Changed_Records]"
+						},
+						"linkedServiceName": {
+							"referenceName": "cseferlistestdb1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Archive Source File",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Insert New and Changed Records",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
+						},
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": false
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlobZip",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ArchiveBlob",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]",
+				"[concat(variables('factoryId'), '/datasets/destComplaintsZipBlob')]",
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlob')]",
+				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl')]",
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
+				"[concat(variables('factoryId'), '/datasets/ArchiveBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ArchiveBlob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Archive Blob Container",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": {
+						"value": "@concat('FLAT_CMPL',string(utcnow()),'.zip')",
+						"type": "Expression"
+					},
+					"folderPath": "archive"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/destComplaintsSQLTempTbl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cseferlistestdb1",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureSqlTable",
+				"structure": [
+					{
+						"name": "CMPLID",
+						"type": "String"
+					},
+					{
+						"name": "ODINO",
+						"type": "String"
+					},
+					{
+						"name": "MFR_NAME",
+						"type": "String"
+					},
+					{
+						"name": "MAKETXT",
+						"type": "String"
+					},
+					{
+						"name": "MODELTXT",
+						"type": "String"
+					},
+					{
+						"name": "YEARTXT",
+						"type": "String"
+					},
+					{
+						"name": "CRASH",
+						"type": "String"
+					},
+					{
+						"name": "FAILDATE",
+						"type": "String"
+					},
+					{
+						"name": "FIRE",
+						"type": "String"
+					},
+					{
+						"name": "INJURED",
+						"type": "Decimal"
+					},
+					{
+						"name": "DEATHS",
+						"type": "Decimal"
+					},
+					{
+						"name": "COMPDESC",
+						"type": "String"
+					},
+					{
+						"name": "CITY",
+						"type": "String"
+					},
+					{
+						"name": "STATE",
+						"type": "String"
+					},
+					{
+						"name": "VIN",
+						"type": "String"
+					},
+					{
+						"name": "DATEA",
+						"type": "String"
+					},
+					{
+						"name": "LDATE",
+						"type": "String"
+					},
+					{
+						"name": "MILES",
+						"type": "Decimal"
+					},
+					{
+						"name": "OCCURENCES",
+						"type": "Decimal"
+					},
+					{
+						"name": "CDESCR",
+						"type": "String"
+					},
+					{
+						"name": "CMPL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "POLICE_RPT_YN",
+						"type": "String"
+					},
+					{
+						"name": "PURCH_DT",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_OWNER_YN",
+						"type": "String"
+					},
+					{
+						"name": "ANTI_BRAKES_YN",
+						"type": "String"
+					},
+					{
+						"name": "CRUISE_CONT_YN",
+						"type": "String"
+					},
+					{
+						"name": "NUM_CYLS",
+						"type": "Decimal"
+					},
+					{
+						"name": "DRIVE_TRAIN",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_SYS",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "TRANS_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "VEH_SPEED",
+						"type": "Decimal"
+					},
+					{
+						"name": "DOT",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_SIZE",
+						"type": "String"
+					},
+					{
+						"name": "LOC_OF_TIRE",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_FAIL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_EQUIP_YN",
+						"type": "String"
+					},
+					{
+						"name": "MANUF_DT",
+						"type": "String"
+					},
+					{
+						"name": "SEAT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "RESTRAINT_TYE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_NAME",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_TEL",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_CITY",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_STATE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_ZIP",
+						"type": "String"
+					},
+					{
+						"name": "PROD_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "REPAIRED_YN",
+						"type": "String"
+					},
+					{
+						"name": "MEDICAL_ATTN",
+						"type": "String"
+					},
+					{
+						"name": "VEHICLES_TOWED_YN",
+						"type": "String"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[dbo].[FLAT_CMPL]"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/destComplaintsZipBlob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsBlobZip",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": "FLAT_CMPL.zip",
+					"folderPath": "adfdemoblob/downloads/folders/Complaints"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "srcComplaintsBlob",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureBlob",
+				"structure": [
+					{
+						"name": "CMPLID",
+						"type": "String"
+					},
+					{
+						"name": "ODINO",
+						"type": "String"
+					},
+					{
+						"name": "MFR_NAME",
+						"type": "String"
+					},
+					{
+						"name": "MAKETXT",
+						"type": "String"
+					},
+					{
+						"name": "MODELTXT",
+						"type": "String"
+					},
+					{
+						"name": "YEARTXT",
+						"type": "String"
+					},
+					{
+						"name": "CRASH",
+						"type": "String"
+					},
+					{
+						"name": "FAILDATE",
+						"type": "String"
+					},
+					{
+						"name": "FIRE",
+						"type": "String"
+					},
+					{
+						"name": "INJURED",
+						"type": "Int64"
+					},
+					{
+						"name": "DEATHS",
+						"type": "Int64"
+					},
+					{
+						"name": "COMPDESC",
+						"type": "String"
+					},
+					{
+						"name": "CITY",
+						"type": "String"
+					},
+					{
+						"name": "STATE",
+						"type": "String"
+					},
+					{
+						"name": "VIN",
+						"type": "String"
+					},
+					{
+						"name": "DATEA",
+						"type": "String"
+					},
+					{
+						"name": "LDATE",
+						"type": "String"
+					},
+					{
+						"name": "MILES",
+						"type": "Int64"
+					},
+					{
+						"name": "OCCURENCES",
+						"type": "Int64"
+					},
+					{
+						"name": "CDESCR",
+						"type": "String"
+					},
+					{
+						"name": "CMPL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "POLICE_RPT_YN",
+						"type": "String"
+					},
+					{
+						"name": "PURCH_DT",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_OWNER_YN",
+						"type": "String"
+					},
+					{
+						"name": "ANTI_BRAKES_YN",
+						"type": "String"
+					},
+					{
+						"name": "CRUISE_CONT_YN",
+						"type": "String"
+					},
+					{
+						"name": "NUM_CYLS",
+						"type": "Int64"
+					},
+					{
+						"name": "DRIVE_TRAIN",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_SYS",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "TRANS_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "VEH_SPEED",
+						"type": "Int64"
+					},
+					{
+						"name": "DOT",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_SIZE",
+						"type": "String"
+					},
+					{
+						"name": "LOC_OF_TIRE",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_FAIL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_EQUIP_YN",
+						"type": "String"
+					},
+					{
+						"name": "MANUF_DT",
+						"type": "String"
+					},
+					{
+						"name": "SEAT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "RESTRAINT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_NAME",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_TEL",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_CITY",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_STATE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_ZIP",
+						"type": "String"
+					},
+					{
+						"name": "PROD_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "REPAIRED_YN",
+						"type": "String"
+					},
+					{
+						"name": "MEDICAL_ATTN",
+						"type": "String"
+					},
+					{
+						"name": "VEHICLES_TOWED_YN",
+						"type": "String"
+					}
+				],
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": "\t",
+						"treatEmptyAsNull": true
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Fastest"
+					},
+					"fileName": "FLAT_CMPL.zip",
+					"folderPath": "adfdemoblob/downloads/folders/Complaints"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlobZip')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsBlobZip",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": "*.zip",
+					"folderPath": "adfdemoblob/downloads/folders/Complaints"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsHttpZip')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsSourceZip",
+					"type": "LinkedServiceReference"
+				},
+				"type": "HttpFile",
+				"typeProperties": {
+					"relativeUrl": "/downloads/folders/Complaints/FLAT_CMPL.zip",
+					"requestMethod": "GET"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Daily Update')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "ComplainsCopyFromWebToBlob",
+							"type": "PipelineReference"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2018-03-01T02:30:00.000Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								2
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ComplainsCopyFromWebToBlob')]"
+			]
+		}
+	]
+}

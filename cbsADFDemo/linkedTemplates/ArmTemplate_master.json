@@ -1,0 +1,231 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "cbsADFDemo"
+		},
+		"integrationRuntime_cbsadfemosa": {
+			"type": "string",
+			"metadata": "Integration Runtime Name",
+			"defaultValue": "cbsadfemosa"
+		},
+		"Archive Blob Container_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Archive Blob Container'"
+		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
+		"AzureSqlDatabaseLnkSvc_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLnkSvc'"
+		},
+		"ComplaintsBlobZip_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ComplaintsBlobZip'"
+		},
+		"MyAzureBlobLinkedService_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MyAzureBlobLinkedService'"
+		},
+		"MyDataBricksLinkedService_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'MyDataBricksLinkedService'"
+		},
+		"cseferlistestdb1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'cseferlistestdb1'"
+		},
+		"destComplaintsDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'destComplaintsDB'"
+		},
+		"df_demo_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'df_demo'"
+		},
+		"sqldbAWLT_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'sqldbAWLT'"
+		},
+		"srcComplaintsBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'srcComplaintsBlob'"
+		},
+		"src_sqldbAWLT_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'src_sqldbAWLT'"
+		},
+		"staging_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'staging'"
+		},
+		"ArchiveBlob_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('FLAT_CMPL',string(utcnow()),'.zip')"
+		},
+		"ArchiveBlob_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "archive"
+		},
+		"destComplaintsZipBlob_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "FLAT_CMPL.zip"
+		},
+		"destComplaintsZipBlob_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
+		},
+		"srcComplaintsBlob_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "FLAT_CMPL.zip"
+		},
+		"srcComplaintsBlob_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "*.zip"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
+		},
+		"ComplaintsSourceZip_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www-odi.nhtsa.dot.gov"
+		},
+		"ComplaintsSourceZip_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas Token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"integrationRuntime_cbsadfemosa": {
+						"value": "[parameters('integrationRuntime_cbsadfemosa')]"
+					},
+					"AzureDatabricks1_accessToken": {
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
+					},
+					"AzureSqlDatabaseLnkSvc_connectionString": {
+						"value": "[parameters('AzureSqlDatabaseLnkSvc_connectionString')]"
+					},
+					"MyAzureBlobLinkedService_connectionString": {
+						"value": "[parameters('MyAzureBlobLinkedService_connectionString')]"
+					},
+					"MyDataBricksLinkedService_accessToken": {
+						"value": "[parameters('MyDataBricksLinkedService_accessToken')]"
+					},
+					"cseferlistestdb1_connectionString": {
+						"value": "[parameters('cseferlistestdb1_connectionString')]"
+					},
+					"destComplaintsDB_connectionString": {
+						"value": "[parameters('destComplaintsDB_connectionString')]"
+					},
+					"df_demo_connectionString": {
+						"value": "[parameters('df_demo_connectionString')]"
+					},
+					"sqldbAWLT_connectionString": {
+						"value": "[parameters('sqldbAWLT_connectionString')]"
+					},
+					"src_sqldbAWLT_connectionString": {
+						"value": "[parameters('src_sqldbAWLT_connectionString')]"
+					},
+					"staging_connectionString": {
+						"value": "[parameters('staging_connectionString')]"
+					},
+					"ComplaintsSourceZip_properties_typeProperties_url": {
+						"value": "[parameters('ComplaintsSourceZip_properties_typeProperties_url')]"
+					},
+					"ComplaintsSourceZip_properties_typeProperties_username": {
+						"value": "[parameters('ComplaintsSourceZip_properties_typeProperties_username')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"Archive Blob Container_connectionString": {
+						"value": "[parameters('Archive Blob Container_connectionString')]"
+					},
+					"ComplaintsBlobZip_connectionString": {
+						"value": "[parameters('ComplaintsBlobZip_connectionString')]"
+					},
+					"srcComplaintsBlob_connectionString": {
+						"value": "[parameters('srcComplaintsBlob_connectionString')]"
+					},
+					"ArchiveBlob_properties_typeProperties_fileName": {
+						"value": "[parameters('ArchiveBlob_properties_typeProperties_fileName')]"
+					},
+					"ArchiveBlob_properties_typeProperties_folderPath": {
+						"value": "[parameters('ArchiveBlob_properties_typeProperties_folderPath')]"
+					},
+					"destComplaintsZipBlob_properties_typeProperties_fileName": {
+						"value": "[parameters('destComplaintsZipBlob_properties_typeProperties_fileName')]"
+					},
+					"destComplaintsZipBlob_properties_typeProperties_folderPath": {
+						"value": "[parameters('destComplaintsZipBlob_properties_typeProperties_folderPath')]"
+					},
+					"srcComplaintsBlob_properties_typeProperties_fileName": {
+						"value": "[parameters('srcComplaintsBlob_properties_typeProperties_fileName')]"
+					},
+					"srcComplaintsBlob_properties_typeProperties_folderPath": {
+						"value": "[parameters('srcComplaintsBlob_properties_typeProperties_folderPath')]"
+					},
+					"srcComplaintsBlobZip_properties_typeProperties_fileName": {
+						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]"
+					},
+					"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
+						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
+		}
+	]
+}

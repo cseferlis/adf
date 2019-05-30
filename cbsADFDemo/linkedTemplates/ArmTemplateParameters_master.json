@@ -1,0 +1,87 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "cbsADFDemo"
+		},
+		"integrationRuntime_cbsadfemosa": {
+			"value": "cbsadfemosa"
+		},
+		"Archive Blob Container_connectionString": {
+			"value": ""
+		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
+		"AzureSqlDatabaseLnkSvc_connectionString": {
+			"value": ""
+		},
+		"ComplaintsBlobZip_connectionString": {
+			"value": ""
+		},
+		"MyAzureBlobLinkedService_connectionString": {
+			"value": ""
+		},
+		"MyDataBricksLinkedService_accessToken": {
+			"value": ""
+		},
+		"cseferlistestdb1_connectionString": {
+			"value": ""
+		},
+		"destComplaintsDB_connectionString": {
+			"value": ""
+		},
+		"df_demo_connectionString": {
+			"value": ""
+		},
+		"sqldbAWLT_connectionString": {
+			"value": ""
+		},
+		"srcComplaintsBlob_connectionString": {
+			"value": ""
+		},
+		"src_sqldbAWLT_connectionString": {
+			"value": ""
+		},
+		"staging_connectionString": {
+			"value": ""
+		},
+		"ArchiveBlob_properties_typeProperties_fileName": {
+			"value": "@concat('FLAT_CMPL',string(utcnow()),'.zip')"
+		},
+		"ArchiveBlob_properties_typeProperties_folderPath": {
+			"value": "archive"
+		},
+		"destComplaintsZipBlob_properties_typeProperties_fileName": {
+			"value": "FLAT_CMPL.zip"
+		},
+		"destComplaintsZipBlob_properties_typeProperties_folderPath": {
+			"value": "adfdemoblob/downloads/folders/Complaints"
+		},
+		"srcComplaintsBlob_properties_typeProperties_fileName": {
+			"value": "FLAT_CMPL.zip"
+		},
+		"srcComplaintsBlob_properties_typeProperties_folderPath": {
+			"value": "adfdemoblob/downloads/folders/Complaints"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
+			"value": "*.zip"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
+			"value": "adfdemoblob/downloads/folders/Complaints"
+		},
+		"ComplaintsSourceZip_properties_typeProperties_url": {
+			"value": "https://www-odi.nhtsa.dot.gov"
+		},
+		"ComplaintsSourceZip_properties_typeProperties_username": {
+			"value": ""
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
