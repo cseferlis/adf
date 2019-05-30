@@ -7,7 +7,7 @@
 		},
 		"type": "AzureBlob",
 		"typeProperties": {
-			"fileName": "FLAT_CMPL.zip",
+			"fileName": "*.zip",
 			"folderPath": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
