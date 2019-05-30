@@ -814,7 +814,9 @@
 								"writeBatchSize": 100000
 							},
 							"enableStaging": false,
+							"parallelCopies": 32,
 							"enableSkipIncompatibleRow": true,
+							"dataIntegrationUnits": 32,
 							"translator": {
 								"type": "TabularTranslator",
 								"columnMappings": {
