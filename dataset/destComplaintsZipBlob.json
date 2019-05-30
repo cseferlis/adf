@@ -7,8 +7,8 @@
 		},
 		"type": "AzureBlob",
 		"typeProperties": {
-			"fileName": "",
-			"folderPath": "adfdemoblob"
+			"fileName": "FLAT_CMPL.zip",
+			"folderPath": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
