@@ -1,0 +1,229 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "cbsADFDemo"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/destComplaintsSQLTempTbl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cseferlistestdb1",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureSqlTable",
+				"structure": [
+					{
+						"name": "CMPLID",
+						"type": "String"
+					},
+					{
+						"name": "ODINO",
+						"type": "String"
+					},
+					{
+						"name": "MFR_NAME",
+						"type": "String"
+					},
+					{
+						"name": "MAKETXT",
+						"type": "String"
+					},
+					{
+						"name": "MODELTXT",
+						"type": "String"
+					},
+					{
+						"name": "YEARTXT",
+						"type": "String"
+					},
+					{
+						"name": "CRASH",
+						"type": "String"
+					},
+					{
+						"name": "FAILDATE",
+						"type": "String"
+					},
+					{
+						"name": "FIRE",
+						"type": "String"
+					},
+					{
+						"name": "INJURED",
+						"type": "Decimal"
+					},
+					{
+						"name": "DEATHS",
+						"type": "Decimal"
+					},
+					{
+						"name": "COMPDESC",
+						"type": "String"
+					},
+					{
+						"name": "CITY",
+						"type": "String"
+					},
+					{
+						"name": "STATE",
+						"type": "String"
+					},
+					{
+						"name": "VIN",
+						"type": "String"
+					},
+					{
+						"name": "DATEA",
+						"type": "String"
+					},
+					{
+						"name": "LDATE",
+						"type": "String"
+					},
+					{
+						"name": "MILES",
+						"type": "Decimal"
+					},
+					{
+						"name": "OCCURENCES",
+						"type": "Decimal"
+					},
+					{
+						"name": "CDESCR",
+						"type": "String"
+					},
+					{
+						"name": "CMPL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "POLICE_RPT_YN",
+						"type": "String"
+					},
+					{
+						"name": "PURCH_DT",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_OWNER_YN",
+						"type": "String"
+					},
+					{
+						"name": "ANTI_BRAKES_YN",
+						"type": "String"
+					},
+					{
+						"name": "CRUISE_CONT_YN",
+						"type": "String"
+					},
+					{
+						"name": "NUM_CYLS",
+						"type": "Decimal"
+					},
+					{
+						"name": "DRIVE_TRAIN",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_SYS",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "TRANS_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "VEH_SPEED",
+						"type": "Decimal"
+					},
+					{
+						"name": "DOT",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_SIZE",
+						"type": "String"
+					},
+					{
+						"name": "LOC_OF_TIRE",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_FAIL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_EQUIP_YN",
+						"type": "String"
+					},
+					{
+						"name": "MANUF_DT",
+						"type": "String"
+					},
+					{
+						"name": "SEAT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "RESTRAINT_TYE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_NAME",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_TEL",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_CITY",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_STATE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_ZIP",
+						"type": "String"
+					},
+					{
+						"name": "PROD_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "REPAIRED_YN",
+						"type": "String"
+					},
+					{
+						"name": "MEDICAL_ATTN",
+						"type": "String"
+					},
+					{
+						"name": "VEHICLES_TOWED_YN",
+						"type": "String"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[dbo].[CMPL_Temp]"
+				}
+			}
+		}
+	]
+}

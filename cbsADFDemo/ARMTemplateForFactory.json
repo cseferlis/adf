@@ -1104,7 +1104,7 @@
 					}
 				],
 				"typeProperties": {
-					"tableName": "[[dbo].[FLAT_CMPL]"
+					"tableName": "[[dbo].[CMPL_Temp]"
 				}
 			},
 			"dependsOn": [
