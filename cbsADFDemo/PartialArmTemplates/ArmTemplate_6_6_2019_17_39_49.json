@@ -1,0 +1,64 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name",
+			"defaultValue": "cbsADFDemo"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/UnionForUniqueRecords')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "destComplaintsSQLTempTbl_New1",
+								"type": "DatasetReference"
+							},
+							"name": "CMPLTemp",
+							"script": "source(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table') ~> CMPLTemp"
+						},
+						{
+							"dataset": {
+								"referenceName": "Complaints",
+								"type": "DatasetReference"
+							},
+							"name": "Complaints",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'SELECT\\n\t[CMPLID],\\n\t[ODINO],\\n\t[MFR_NAME],\\n\t[MAKETXT],\\n\t[MODELTXT],\\n\t[YEARTXT],\\n\t[CRASH],\\n\t[FAILDATE],\\n\t[FIRE],\\n\t[INJURED],\\n\t[DEATHS],\\n\t[COMPDESC],\\n\t[CITY],\\n\t[STATE],\\n\t[VIN],\\n\t[DATEA],\\n\t[LDATE],\\n\t[MILES],\\n\t[OCCURENCES],\\n\t[CDESCR],\\n\t[CMPL_TYPE],\\n\t[POLICE_RPT_YN],\\n\t[PURCH_DT],\\n\t[ORIG_OWNER_YN],\\n\t[ANTI_BRAKES_YN],\\n\t[CRUISE_CONT_YN],\\n\t[NUM_CYLS],\\n\t[DRIVE_TRAIN],\\n\t[FUEL_SYS],\\n\t[FUEL_TYPE],\\n\t[TRANS_TYPE],\\n\t[VEH_SPEED],\\n\t[DOT],\\n\t[TIRE_SIZE],\\n\t[LOC_OF_TIRE],\\n\t[TIRE_FAIL_TYPE],\\n\t[ORIG_EQUIP_YN],\\n\t[MANUF_DT],\\n\t[SEAT_TYPE],\\n\t[RESTRAINT_TYE],\\n\t[DEALER_NAME],\\n\t[DEALER_TEL],\\n\t[DEALER_CITY],\\n\t[DEALER_STATE],\\n\t[DEALER_ZIP],\\n\t[PROD_TYPE],\\n\t[REPAIRED_YN],\\n\t[MEDICAL_ATTN],\\n\t[VEHICLES_TOWED_YN]\\nFROM CMPL_Temp',\n\tformat: 'query') ~> Complaints"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Complaints",
+								"type": "DatasetReference"
+							},
+							"name": "destComplaints",
+							"script": "Union1 sink(input(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tmapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t),\n\ttruncate:true) ~> destComplaints"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Union1",
+							"script": "Select1, Complaints union(byName: true)~> Union1"
+						},
+						{
+							"name": "Select1",
+							"script": "CMPLTemp select(mapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t))~> Select1"
+						}
+					]
+				}
+			}
+		}
+	]
+}
