@@ -156,35 +156,11 @@
 				}
 			},
 			{
-				"name": "Insert New and Changed Records",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "Extract Text File To Temp Table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30
-				},
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[sp_Insert_New_and_Changed_Records]"
-				},
-				"linkedServiceName": {
-					"referenceName": "cseferlistestdb1",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
 				"name": "Archive Source File",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Insert New and Changed Records",
+						"activity": "UnionForUniqueRecords",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -220,6 +196,31 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "UnionForUniqueRecords",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Extract Text File To Temp Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "UnionForUniqueRecords",
+						"type": "DataFlowReference"
+					}
+				}
 			}
 		]
 	},
