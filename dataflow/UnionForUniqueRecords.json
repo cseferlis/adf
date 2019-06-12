@@ -18,7 +18,7 @@
 						"type": "DatasetReference"
 					},
 					"name": "Complaints",
-					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tquery: 'SELECT [CMPLID]\\n      ,[ODINO]\\n      ,[MFR_NAME]\\n      ,[MAKETXT]\\n      ,[MODELTXT]\\n      ,[YEARTXT]\\n      ,[CRASH]\\n      ,[FAILDATE]\\n      ,[FIRE]\\n      ,[INJURED]\\n      ,[DEATHS]\\n      ,[COMPDESC]\\n      ,[CITY]\\n      ,[STATE]\\n      ,[VIN]\\n      ,[DATEA]\\n      ,[LDATE]\\n      ,[MILES]\\n      ,[OCCURENCES]\\n      ,[CDESCR]\\n      ,[CMPL_TYPE]\\n      ,[POLICE_RPT_YN]\\n      ,[PURCH_DT]\\n      ,[ORIG_OWNER_YN]\\n      ,[ANTI_BRAKES_YN]\\n      ,[CRUISE_CONT_YN]\\n      ,[NUM_CYLS]\\n      ,[DRIVE_TRAIN]\\n      ,[FUEL_SYS]\\n      ,[FUEL_TYPE]\\n      ,[TRANS_TYPE]\\n      ,[VEH_SPEED]\\n      ,[DOT]\\n      ,[TIRE_SIZE]\\n      ,[LOC_OF_TIRE]\\n      ,[TIRE_FAIL_TYPE]\\n      ,[ORIG_EQUIP_YN]\\n      ,[MANUF_DT]\\n      ,[SEAT_TYPE]\\n      ,[RESTRAINT_TYE]\\n      ,[DEALER_NAME]\\n      ,[DEALER_TEL]\\n      ,[DEALER_CITY]\\n      ,[DEALER_STATE]\\n      ,[DEALER_ZIP]\\n      ,[PROD_TYPE]\\n      ,[REPAIRED_YN]\\n      ,[MEDICAL_ATTN]\\n      ,[VEHICLES_TOWED_YN]\\n  FROM [dbo].[Complaints]',\n\tformat: 'query') ~> Complaints"
+					"script": "source(output(\n\t\t\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: true,\n\tquery: 'SELECT [CMPLID]\\n      ,[ODINO]\\n      ,[MFR_NAME]\\n      ,[MAKETXT]\\n      ,[MODELTXT]\\n      ,[YEARTXT]\\n      ,[CRASH]\\n      ,[FAILDATE]\\n      ,[FIRE]\\n      ,[INJURED]\\n      ,[DEATHS]\\n      ,[COMPDESC]\\n      ,[CITY]\\n      ,[STATE]\\n      ,[VIN]\\n      ,[DATEA]\\n      ,[LDATE]\\n      ,[MILES]\\n      ,[OCCURENCES]\\n      ,[CDESCR]\\n      ,[CMPL_TYPE]\\n      ,[POLICE_RPT_YN]\\n      ,[PURCH_DT]\\n      ,[ORIG_OWNER_YN]\\n      ,[ANTI_BRAKES_YN]\\n      ,[CRUISE_CONT_YN]\\n      ,[NUM_CYLS]\\n      ,[DRIVE_TRAIN]\\n      ,[FUEL_SYS]\\n      ,[FUEL_TYPE]\\n      ,[TRANS_TYPE]\\n      ,[VEH_SPEED]\\n      ,[DOT]\\n      ,[TIRE_SIZE]\\n      ,[LOC_OF_TIRE]\\n      ,[TIRE_FAIL_TYPE]\\n      ,[ORIG_EQUIP_YN]\\n      ,[MANUF_DT]\\n      ,[SEAT_TYPE]\\n      ,[RESTRAINT_TYE]\\n      ,[DEALER_NAME]\\n      ,[DEALER_TEL]\\n      ,[DEALER_CITY]\\n      ,[DEALER_STATE]\\n      ,[DEALER_ZIP]\\n      ,[PROD_TYPE]\\n      ,[REPAIRED_YN]\\n      ,[MEDICAL_ATTN]\\n      ,[VEHICLES_TOWED_YN]\\n  FROM [dbo].[Complaints]',\n\tformat: 'query') ~> Complaints"
 				}
 			],
 			"sinks": [
@@ -43,10 +43,6 @@
 				{
 					"name": "Sort1",
 					"script": "CMPLTemp sort(desc(CMPLID, false)) ~> Sort1"
-				},
-				{
-					"name": "Sort2",
-					"script": "Complaints sort(asc(ERROR_FUNCTION(''), true)) ~> Sort2"
 				}
 			]
 		}
