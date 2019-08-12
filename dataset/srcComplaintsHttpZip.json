@@ -5,6 +5,7 @@
 			"referenceName": "ComplaintsSourceZip",
 			"type": "LinkedServiceReference"
 		},
+		"annotations": [],
 		"type": "HttpFile",
 		"typeProperties": {
 			"relativeUrl": "/downloads/folders/Complaints/FLAT_CMPL.zip",

@@ -5,6 +5,7 @@
 			"referenceName": "ComplaintsBlobZip",
 			"type": "LinkedServiceReference"
 		},
+		"annotations": [],
 		"type": "AzureBlob",
 		"typeProperties": {
 			"fileName": "*.zip",

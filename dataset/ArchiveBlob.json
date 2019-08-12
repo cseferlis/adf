@@ -5,6 +5,7 @@
 			"referenceName": "Archive Blob Container",
 			"type": "LinkedServiceReference"
 		},
+		"annotations": [],
 		"type": "AzureBlob",
 		"typeProperties": {
 			"fileName": {

@@ -18,6 +18,7 @@
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "HttpSource",
@@ -58,6 +59,7 @@
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "BlobSource",
@@ -142,11 +144,13 @@
 			{
 				"name": "Truncate CMPL Temp",
 				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[sp_Truncate_CMPL_Temp]"
 				},
@@ -171,6 +175,7 @@
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[sp_Insert_New_and_Changed_Records]"
 				},
@@ -196,6 +201,7 @@
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "BlobSource",
@@ -221,7 +227,8 @@
 					}
 				]
 			}
-		]
+		],
+		"annotations": []
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

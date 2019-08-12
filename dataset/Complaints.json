@@ -5,6 +5,7 @@
 			"referenceName": "cseferlistestdb1",
 			"type": "LinkedServiceReference"
 		},
+		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
 			{
@@ -224,5 +225,6 @@
 		"typeProperties": {
 			"tableName": "[dbo].[Complaints]"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }
