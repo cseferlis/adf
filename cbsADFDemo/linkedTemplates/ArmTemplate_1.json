@@ -4,7 +4,7 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory Name",
+			"metadata": "Data Factory name",
 			"defaultValue": "cbsADFDemo"
 		},
 		"Archive Blob Container_connectionString": {
@@ -919,8 +919,7 @@
 								"type": "DatasetReference"
 							},
 							"name": "Customer",
-							"typeProperties": {},
-							"script": "source(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tformat: 'table') ~> Customer"
+							"typeProperties": {}
 						},
 						{
 							"dataset": {
@@ -928,8 +927,7 @@
 								"type": "DatasetReference"
 							},
 							"name": "Address",
-							"typeProperties": {},
-							"script": "source(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Address"
+							"typeProperties": {}
 						},
 						{
 							"dataset": {
@@ -937,8 +935,7 @@
 								"type": "DatasetReference"
 							},
 							"name": "CustomerAddress",
-							"typeProperties": {},
-							"script": "source(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tformat: 'table') ~> CustomerAddress"
+							"typeProperties": {}
 						}
 					],
 					"sinks": [
@@ -947,28 +944,24 @@
 								"referenceName": "CustomerAddressMerged",
 								"type": "DatasetReference"
 							},
-							"name": "CustomerAddressMerged",
-							"script": "Select2 sink(input(\n\t\tCustomerID as integer,\n\t\tCompanyName as string,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true) ~> CustomerAddressMerged"
+							"name": "CustomerAddressMerged"
 						}
 					],
 					"transformations": [
 						{
-							"name": "Join1",
-							"script": "Customer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join1"
+							"name": "Join1"
 						},
 						{
-							"name": "Select1",
-							"script": "Join1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t))~> Select1"
+							"name": "Select1"
 						},
 						{
-							"name": "Join2",
-							"script": "Select1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join2"
+							"name": "Join2"
 						},
 						{
-							"name": "Select2",
-							"script": "Join2 select(mapColumn(\n\t\tCustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t))~> Select2"
+							"name": "Select2"
 						}
-					]
+					],
+					"script": "\n\nsource(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Customer\nsource(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Address\nsource(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustomerAddress\nCustomer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join1\nJoin1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Select1\nSelect1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join2\nJoin2 select(mapColumn(\n\t\tCustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Select2\nSelect2 sink(input(\n\t\tCustomerID as integer,\n\t\tCompanyName as string,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table') ~> CustomerAddressMerged"
 				}
 			},
 			"dependsOn": []
@@ -987,8 +980,7 @@
 								"type": "DatasetReference"
 							},
 							"name": "CMPLTemp",
-							"typeProperties": {},
-							"script": "source(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table') ~> CMPLTemp"
+							"typeProperties": {}
 						},
 						{
 							"dataset": {
@@ -996,8 +988,7 @@
 								"type": "DatasetReference"
 							},
 							"name": "Complaints",
-							"typeProperties": {},
-							"script": "source(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: true,\n\tformat: 'table') ~> Complaints"
+							"typeProperties": {}
 						}
 					],
 					"sinks": [
@@ -1006,24 +997,21 @@
 								"referenceName": "Complaints",
 								"type": "DatasetReference"
 							},
-							"name": "destComplaints",
-							"script": "Union1 sink(input(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'table',\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tmapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t),\n\ttruncate:true) ~> destComplaints"
+							"name": "destComplaints"
 						}
 					],
 					"transformations": [
 						{
-							"name": "Union1",
-							"script": "Select1, Complaints union(byName: true)~> Union1"
+							"name": "Union1"
 						},
 						{
-							"name": "Select1",
-							"script": "Sort1 select(mapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t))~> Select1"
+							"name": "Select1"
 						},
 						{
-							"name": "Sort1",
-							"script": "CMPLTemp sort(desc(CMPLID, false)) ~> Sort1"
+							"name": "Sort1"
 						}
-					]
+					],
+					"script": "\n\nsource(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CMPLTemp\nsource(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Complaints\nSelect1, Complaints union(byName: true)~> Union1\nSort1 select(mapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Select1\nCMPLTemp sort(desc(CMPLID, false)) ~> Sort1\nUnion1 sink(input(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tmapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t)) ~> destComplaints"
 				}
 			},
 			"dependsOn": [
@@ -1598,8 +1586,8 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2018-03-01T02:30:00.000Z",
-						"timeZone": "UTC",
+						"startTime": "2018-03-01T10:30:00Z",
+						"timeZone": "EST",
 						"schedule": {
 							"minutes": [
 								30

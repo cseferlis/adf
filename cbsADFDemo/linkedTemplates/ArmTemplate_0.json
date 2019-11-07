@@ -4,12 +4,12 @@
 	"parameters": {
 		"factoryName": {
 			"type": "string",
-			"metadata": "Data Factory Name",
+			"metadata": "Data Factory name",
 			"defaultValue": "cbsADFDemo"
 		},
 		"integrationRuntime_cbsadfemosa": {
 			"type": "string",
-			"metadata": "Integration Runtime Name",
+			"metadata": "Integration runtime name",
 			"defaultValue": "cbsadfemosa"
 		},
 		"AzureDatabricks1_accessToken": {
