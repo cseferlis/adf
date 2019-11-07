@@ -2347,6 +2347,44 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Daily Update')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "ComplainsCopyFromWebToBlob",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2018-03-01T02:30:00Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								2
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ComplainsCopyFromWebToBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_cbsadfemosa'))]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -2482,44 +2520,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl_New1')]",
 				"[concat(variables('factoryId'), '/datasets/Complaints')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Daily Update')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "ComplainsCopyFromWebToBlob",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2018-03-01T10:30:00Z",
-						"timeZone": "EST",
-						"schedule": {
-							"minutes": [
-								30
-							],
-							"hours": [
-								2
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/ComplainsCopyFromWebToBlob')]"
 			]
 		}
 	]
