@@ -1,6 +1,7 @@
 {
 	"name": "Daily Update",
 	"properties": {
+		"annotations": [],
 		"runtimeState": "Stopped",
 		"pipelines": [
 			{
@@ -15,7 +16,7 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2018-03-01T02:30:00Z",
+				"startTime": "2018-03-01T02:30:00.000Z",
 				"timeZone": "UTC",
 				"schedule": {
 					"minutes": [
