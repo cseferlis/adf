@@ -17,7 +17,7 @@
 				"frequency": "Day",
 				"interval": 1,
 				"startTime": "2018-03-01T12:30:00.000Z",
-				"timeZone": "EST",
+				"timeZone": "UTC",
 				"schedule": {
 					"minutes": [
 						30
