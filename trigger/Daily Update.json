@@ -16,8 +16,8 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2018-03-01T02:30:00.000Z",
-				"timeZone": "UTC",
+				"startTime": "2018-03-01T12:30:00.000Z",
+				"timeZone": "EST",
 				"schedule": {
 					"minutes": [
 						30
