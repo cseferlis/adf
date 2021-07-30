@@ -1,0 +1,20 @@
+{
+	"name": "Union Complaints and tmpComplaints",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "srcComplaints",
+						"type": "DatasetReference"
+					},
+					"name": "sqlComplaints"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"script": "source(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> sqlComplaints"
+		}
+	}
+}

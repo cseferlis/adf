@@ -18,6 +18,7 @@
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "HttpSource",
@@ -65,6 +66,7 @@
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "BlobSource",
@@ -72,7 +74,8 @@
 					},
 					"sink": {
 						"type": "SqlSink",
-						"writeBatchSize": 100000
+						"writeBatchSize": 100000,
+						"writeBehavior": "insert"
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
@@ -148,37 +151,15 @@
 			{
 				"name": "Truncate CMPL Temp",
 				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"storedProcedureName": "[dbo].[sp_Truncate_CMPL_Temp]"
-				},
-				"linkedServiceName": {
-					"referenceName": "cseferlistestdb1",
-					"type": "LinkedServiceReference"
-				}
-			},
-			{
-				"name": "Insert New and Changed Records",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "Extract Text File To Temp Table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30
-				},
-				"typeProperties": {
-					"storedProcedureName": "[dbo].[sp_Insert_New_and_Changed_Records]"
 				},
 				"linkedServiceName": {
 					"referenceName": "cseferlistestdb1",
@@ -202,6 +183,7 @@
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"url": "https://prod-02.eastus.logic.azure.com:443/workflows/8c6774ef72b341d49e189c6d9fc7227e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qsZ8iz5TeG70Iaf54sQ--KlybPeTAbpRgph4Emknezk",
 					"method": "POST",
@@ -238,12 +220,6 @@
 						]
 					},
 					{
-						"activity": "Insert New and Changed Records",
-						"dependencyConditions": [
-							"Failed"
-						]
-					},
-					{
 						"activity": "Archive Source File",
 						"dependencyConditions": [
 							"Failed"
@@ -256,6 +232,7 @@
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"url": "https://prod-03.eastus.logic.azure.com:443/workflows/8355738f60d84cce99d60f0dcb94cb4f/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tdhxl4qxE72wxNMX6dxFoNdAlcVfsmz1_3khFhhtDYU",
 					"method": "POST",
@@ -274,7 +251,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Insert New and Changed Records",
+						"activity": "Data flow1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -286,6 +263,7 @@
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false
 				},
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "BlobSource",
@@ -310,6 +288,37 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Extract Text File To Temp Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "1.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Union Complaints and tmpComplaints",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"parameters": {
@@ -320,7 +329,8 @@
 		},
 		"folder": {
 			"name": "SR"
-		}
+		},
+		"annotations": []
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
