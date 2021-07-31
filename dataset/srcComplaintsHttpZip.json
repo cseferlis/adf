@@ -2,7 +2,7 @@
 	"name": "srcComplaintsHttpZip",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "ComplaintsSourceZip",
+			"referenceName": "NHTSADownload",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
