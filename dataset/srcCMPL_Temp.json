@@ -1,5 +1,5 @@
 {
-	"name": "destComplaintsSQLTempTbl_New1",
+	"name": "srcCMPL_Temp",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "cseferlistestdb1",
