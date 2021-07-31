@@ -159,7 +159,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[dbo].[sp_Truncate_CMPL_Temp]"
+					"storedProcedureName": "[sp_Truncate_CMPL_Temp]"
 				},
 				"linkedServiceName": {
 					"referenceName": "cseferlistestdb1",
