@@ -251,7 +251,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Data flow1",
+						"activity": "Union Complaints and tmpComplaints",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -290,7 +290,7 @@
 				]
 			},
 			{
-				"name": "Data flow1",
+				"name": "Union Complaints and tmpComplaints",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
