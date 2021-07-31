@@ -8,6 +8,7 @@
 		"folder": {
 			"name": "SR"
 		},
+		"annotations": [],
 		"type": "AzureBlob",
 		"structure": [
 			{
@@ -217,8 +218,8 @@
 				"type": "ZipDeflate",
 				"level": "Fastest"
 			},
-			"fileName": "downloads/folders/Complaints/FLAT_CMPL.zip",
-			"folderPath": "adfdemoblob"
+			"fileName": "FLAT_CMPL.zip",
+			"folderPath": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
