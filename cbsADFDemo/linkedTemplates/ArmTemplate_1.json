@@ -6,546 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "cbsADFDemo"
-		},
-		"Archive Blob Container_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'Archive Blob Container'"
-		},
-		"ComplaintsBlobZip_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'ComplaintsBlobZip'"
-		},
-		"srcComplaintsBlob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'srcComplaintsBlob'"
-		},
-		"ArchiveBlob_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "@concat('FLAT_CMPL',string(utcnow()),'.zip')"
-		},
-		"ArchiveBlob_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "archive"
-		},
-		"destComplaintsZipBlob_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "FLAT_CMPL.zip"
-		},
-		"destComplaintsZipBlob_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
-		},
-		"srcComplaintsBlob_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "FLAT_CMPL.zip"
-		},
-		"srcComplaintsBlob_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
-		},
-		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "*.zip"
-		},
-		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/adb_AW_CustomerAddress')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseLnkSvc",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"structure": [
-					{
-						"name": "CustomerID",
-						"type": "Int32"
-					},
-					{
-						"name": "AddressID",
-						"type": "Int32"
-					},
-					{
-						"name": "AddressType",
-						"type": "String"
-					},
-					{
-						"name": "rowguid",
-						"type": "Guid"
-					},
-					{
-						"name": "ModifiedDate",
-						"type": "DateTime"
-					},
-					{
-						"name": "TieBreaker",
-						"type": "Int32"
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[SalesLT].[CustomerAddress]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/destComplaintsSQLTempTbl')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "cseferlistestdb1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"structure": [
-					{
-						"name": "CMPLID",
-						"type": "String"
-					},
-					{
-						"name": "ODINO",
-						"type": "String"
-					},
-					{
-						"name": "MFR_NAME",
-						"type": "String"
-					},
-					{
-						"name": "MAKETXT",
-						"type": "String"
-					},
-					{
-						"name": "MODELTXT",
-						"type": "String"
-					},
-					{
-						"name": "YEARTXT",
-						"type": "String"
-					},
-					{
-						"name": "CRASH",
-						"type": "String"
-					},
-					{
-						"name": "FAILDATE",
-						"type": "String"
-					},
-					{
-						"name": "FIRE",
-						"type": "String"
-					},
-					{
-						"name": "INJURED",
-						"type": "Decimal"
-					},
-					{
-						"name": "DEATHS",
-						"type": "Decimal"
-					},
-					{
-						"name": "COMPDESC",
-						"type": "String"
-					},
-					{
-						"name": "CITY",
-						"type": "String"
-					},
-					{
-						"name": "STATE",
-						"type": "String"
-					},
-					{
-						"name": "VIN",
-						"type": "String"
-					},
-					{
-						"name": "DATEA",
-						"type": "String"
-					},
-					{
-						"name": "LDATE",
-						"type": "String"
-					},
-					{
-						"name": "MILES",
-						"type": "Decimal"
-					},
-					{
-						"name": "OCCURENCES",
-						"type": "Decimal"
-					},
-					{
-						"name": "CDESCR",
-						"type": "String"
-					},
-					{
-						"name": "CMPL_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "POLICE_RPT_YN",
-						"type": "String"
-					},
-					{
-						"name": "PURCH_DT",
-						"type": "String"
-					},
-					{
-						"name": "ORIG_OWNER_YN",
-						"type": "String"
-					},
-					{
-						"name": "ANTI_BRAKES_YN",
-						"type": "String"
-					},
-					{
-						"name": "CRUISE_CONT_YN",
-						"type": "String"
-					},
-					{
-						"name": "NUM_CYLS",
-						"type": "Decimal"
-					},
-					{
-						"name": "DRIVE_TRAIN",
-						"type": "String"
-					},
-					{
-						"name": "FUEL_SYS",
-						"type": "String"
-					},
-					{
-						"name": "FUEL_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "TRANS_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "VEH_SPEED",
-						"type": "Decimal"
-					},
-					{
-						"name": "DOT",
-						"type": "String"
-					},
-					{
-						"name": "TIRE_SIZE",
-						"type": "String"
-					},
-					{
-						"name": "LOC_OF_TIRE",
-						"type": "String"
-					},
-					{
-						"name": "TIRE_FAIL_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "ORIG_EQUIP_YN",
-						"type": "String"
-					},
-					{
-						"name": "MANUF_DT",
-						"type": "String"
-					},
-					{
-						"name": "SEAT_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "RESTRAINT_TYE",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_NAME",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_TEL",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_CITY",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_STATE",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_ZIP",
-						"type": "String"
-					},
-					{
-						"name": "PROD_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "REPAIRED_YN",
-						"type": "String"
-					},
-					{
-						"name": "MEDICAL_ATTN",
-						"type": "String"
-					},
-					{
-						"name": "VEHICLES_TOWED_YN",
-						"type": "String"
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[dbo].[CMPL_Temp]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/destComplaintsSQLTempTbl_New1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "cseferlistestdb1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "Complaints_ID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CMPLID",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ODINO",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MFR_NAME",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MAKETXT",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MODELTXT",
-						"type": "nvarchar"
-					},
-					{
-						"name": "YEARTXT",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CRASH",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FAILDATE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FIRE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "INJURED",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 0
-					},
-					{
-						"name": "DEATHS",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 0
-					},
-					{
-						"name": "COMPDESC",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CITY",
-						"type": "nvarchar"
-					},
-					{
-						"name": "STATE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "VIN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DATEA",
-						"type": "nvarchar"
-					},
-					{
-						"name": "LDATE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MILES",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 0
-					},
-					{
-						"name": "OCCURENCES",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 0
-					},
-					{
-						"name": "CDESCR",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CMPL_TYPE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "POLICE_RPT_YN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "PURCH_DT",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ORIG_OWNER_YN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ANTI_BRAKES_YN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CRUISE_CONT_YN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "NUM_CYLS",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 0
-					},
-					{
-						"name": "DRIVE_TRAIN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FUEL_SYS",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FUEL_TYPE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "TRANS_TYPE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "VEH_SPEED",
-						"type": "decimal",
-						"precision": 18,
-						"scale": 0
-					},
-					{
-						"name": "DOT",
-						"type": "nvarchar"
-					},
-					{
-						"name": "TIRE_SIZE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "LOC_OF_TIRE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "TIRE_FAIL_TYPE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "ORIG_EQUIP_YN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MANUF_DT",
-						"type": "nvarchar"
-					},
-					{
-						"name": "SEAT_TYPE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "RESTRAINT_TYE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DEALER_NAME",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DEALER_TEL",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DEALER_CITY",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DEALER_STATE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "DEALER_ZIP",
-						"type": "nvarchar"
-					},
-					{
-						"name": "PROD_TYPE",
-						"type": "nvarchar"
-					},
-					{
-						"name": "REPAIRED_YN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MEDICAL_ATTN",
-						"type": "nvarchar"
-					},
-					{
-						"name": "VEHICLES_TOWED_YN",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[dbo].[CMPL_Temp]"
-				}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/srcComplaintsHttpZip')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -554,6 +20,9 @@
 				"linkedServiceName": {
 					"referenceName": "ComplaintsSourceZip",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
 				},
 				"annotations": [],
 				"type": "HttpFile",
@@ -565,409 +34,60 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Archive Blob Container')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/Archive Files')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"type": "AzureStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('Archive Blob Container_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "[parameters('integrationRuntime_cbsadfemosa')]",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ComplaintsBlobZip')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('ComplaintsBlobZip_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "[parameters('integrationRuntime_cbsadfemosa')]",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlob')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('srcComplaintsBlob_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "[parameters('integrationRuntime_cbsadfemosa')]",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ArchiveBlob')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Archive Blob Container",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureBlob",
-				"typeProperties": {
-					"fileName": {
-						"value": "[parameters('ArchiveBlob_properties_typeProperties_fileName')]",
-						"type": "Expression"
-					},
-					"folderPath": "[parameters('ArchiveBlob_properties_typeProperties_folderPath')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Archive Blob Container')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/destComplaintsZipBlob')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ComplaintsBlobZip",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureBlob",
-				"typeProperties": {
-					"fileName": "[parameters('destComplaintsZipBlob_properties_typeProperties_fileName')]",
-					"folderPath": "[parameters('destComplaintsZipBlob_properties_typeProperties_folderPath')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ComplaintsBlobZip')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlob')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "srcComplaintsBlob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureBlob",
-				"structure": [
+				"activities": [
 					{
-						"name": "CMPLID",
-						"type": "String"
-					},
-					{
-						"name": "ODINO",
-						"type": "String"
-					},
-					{
-						"name": "MFR_NAME",
-						"type": "String"
-					},
-					{
-						"name": "MAKETXT",
-						"type": "String"
-					},
-					{
-						"name": "MODELTXT",
-						"type": "String"
-					},
-					{
-						"name": "YEARTXT",
-						"type": "String"
-					},
-					{
-						"name": "CRASH",
-						"type": "String"
-					},
-					{
-						"name": "FAILDATE",
-						"type": "String"
-					},
-					{
-						"name": "FIRE",
-						"type": "String"
-					},
-					{
-						"name": "INJURED",
-						"type": "Int64"
-					},
-					{
-						"name": "DEATHS",
-						"type": "Int64"
-					},
-					{
-						"name": "COMPDESC",
-						"type": "String"
-					},
-					{
-						"name": "CITY",
-						"type": "String"
-					},
-					{
-						"name": "STATE",
-						"type": "String"
-					},
-					{
-						"name": "VIN",
-						"type": "String"
-					},
-					{
-						"name": "DATEA",
-						"type": "String"
-					},
-					{
-						"name": "LDATE",
-						"type": "String"
-					},
-					{
-						"name": "MILES",
-						"type": "Int64"
-					},
-					{
-						"name": "OCCURENCES",
-						"type": "Int64"
-					},
-					{
-						"name": "CDESCR",
-						"type": "String"
-					},
-					{
-						"name": "CMPL_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "POLICE_RPT_YN",
-						"type": "String"
-					},
-					{
-						"name": "PURCH_DT",
-						"type": "String"
-					},
-					{
-						"name": "ORIG_OWNER_YN",
-						"type": "String"
-					},
-					{
-						"name": "ANTI_BRAKES_YN",
-						"type": "String"
-					},
-					{
-						"name": "CRUISE_CONT_YN",
-						"type": "String"
-					},
-					{
-						"name": "NUM_CYLS",
-						"type": "Int64"
-					},
-					{
-						"name": "DRIVE_TRAIN",
-						"type": "String"
-					},
-					{
-						"name": "FUEL_SYS",
-						"type": "String"
-					},
-					{
-						"name": "FUEL_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "TRANS_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "VEH_SPEED",
-						"type": "Int64"
-					},
-					{
-						"name": "DOT",
-						"type": "String"
-					},
-					{
-						"name": "TIRE_SIZE",
-						"type": "String"
-					},
-					{
-						"name": "LOC_OF_TIRE",
-						"type": "String"
-					},
-					{
-						"name": "TIRE_FAIL_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "ORIG_EQUIP_YN",
-						"type": "String"
-					},
-					{
-						"name": "MANUF_DT",
-						"type": "String"
-					},
-					{
-						"name": "SEAT_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "RESTRAINT_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_NAME",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_TEL",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_CITY",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_STATE",
-						"type": "String"
-					},
-					{
-						"name": "DEALER_ZIP",
-						"type": "String"
-					},
-					{
-						"name": "PROD_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "REPAIRED_YN",
-						"type": "String"
-					},
-					{
-						"name": "MEDICAL_ATTN",
-						"type": "String"
-					},
-					{
-						"name": "VEHICLES_TOWED_YN",
-						"type": "String"
+						"name": "CopyFileToArchive",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "BlobSink",
+								"copyBehavior": "FlattenHierarchy"
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlobZip",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ArchiveBlob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
-				"typeProperties": {
-					"format": {
-						"type": "TextFormat",
-						"columnDelimiter": "\t",
-						"treatEmptyAsNull": true
-					},
-					"compression": {
-						"type": "ZipDeflate",
-						"level": "Fastest"
-					},
-					"fileName": "[parameters('srcComplaintsBlob_properties_typeProperties_fileName')]",
-					"folderPath": "[parameters('srcComplaintsBlob_properties_typeProperties_folderPath')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/srcComplaintsBlob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlobZip')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ComplaintsBlobZip",
-					"type": "LinkedServiceReference"
+				"folder": {
+					"name": "SR"
 				},
-				"annotations": [],
-				"type": "AzureBlob",
-				"typeProperties": {
-					"fileName": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]",
-					"folderPath": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ComplaintsBlobZip')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/TableMergeDemo-Flow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Customer",
-								"type": "DatasetReference"
-							},
-							"name": "Customer",
-							"typeProperties": {}
-						},
-						{
-							"dataset": {
-								"referenceName": "Address",
-								"type": "DatasetReference"
-							},
-							"name": "Address",
-							"typeProperties": {}
-						},
-						{
-							"dataset": {
-								"referenceName": "CustomerAddress",
-								"type": "DatasetReference"
-							},
-							"name": "CustomerAddress",
-							"typeProperties": {}
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CustomerAddressMerged",
-								"type": "DatasetReference"
-							},
-							"name": "CustomerAddressMerged"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Join1"
-						},
-						{
-							"name": "Select1"
-						},
-						{
-							"name": "Join2"
-						},
-						{
-							"name": "Select2"
-						}
-					],
-					"script": "\n\nsource(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Customer\nsource(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tpartitionBy('hash', 1)) ~> Address\nsource(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp,\n\t\tTieBreaker as integer\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tlimit: 100000,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CustomerAddress\nCustomer, CustomerAddress join(Customer@CustomerID == CustomerAddress@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join1\nJoin1 select(mapColumn(\n\t\tCustomerID = Customer@CustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressID\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Select1\nSelect1, Address join(Select1@AddressID == Address@AddressID,\n\tjoinType:'inner',\n\tbroadcast: 'none')~> Join2\nJoin2 select(mapColumn(\n\t\tCustomerID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tCompanyName,\n\t\tEmailAddress,\n\t\tPhone,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Select2\nSelect2 sink(input(\n\t\tCustomerID as integer,\n\t\tCompanyName as string,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table') ~> CustomerAddressMerged"
-				}
+				"annotations": []
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/UnionForUniqueRecords')]",
+			"name": "[concat(parameters('factoryName'), '/Union Complaints and tmpComplaints')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -976,25 +96,23 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "destComplaintsSQLTempTbl_New1",
+								"referenceName": "srcComplaints",
 								"type": "DatasetReference"
 							},
-							"name": "CMPLTemp",
-							"typeProperties": {}
+							"name": "sqlComplaints"
 						},
 						{
 							"dataset": {
-								"referenceName": "Complaints",
+								"referenceName": "srcCMPL_Temp",
 								"type": "DatasetReference"
 							},
-							"name": "Complaints",
-							"typeProperties": {}
+							"name": "sqlCMPLTemp"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "Complaints",
+								"referenceName": "srcComplaints",
 								"type": "DatasetReference"
 							},
 							"name": "destComplaints"
@@ -1002,61 +120,19 @@
 					],
 					"transformations": [
 						{
-							"name": "Union1"
+							"name": "unionComplaints"
 						},
 						{
 							"name": "Select1"
 						},
 						{
-							"name": "Sort1"
+							"name": "Select2"
 						}
 					],
-					"script": "\n\nsource(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> CMPLTemp\nsource(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> Complaints\nSelect1, Complaints union(byName: true)~> Union1\nSort1 select(mapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Select1\nCMPLTemp sort(desc(CMPLID, false)) ~> Sort1\nUnion1 sink(input(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tmapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t)) ~> destComplaints"
+					"script": "source(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> sqlComplaints\nsource(output(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: true,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> sqlCMPLTemp\nSelect1, Select2 union(byName: true)~> unionComplaints\nsqlComplaints select(mapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nsqlCMPLTemp select(mapColumn(\n\t\tCMPLID,\n\t\tODINO,\n\t\tMFR_NAME,\n\t\tMAKETXT,\n\t\tMODELTXT,\n\t\tYEARTXT,\n\t\tCRASH,\n\t\tFAILDATE,\n\t\tFIRE,\n\t\tINJURED,\n\t\tDEATHS,\n\t\tCOMPDESC,\n\t\tCITY,\n\t\tSTATE,\n\t\tVIN,\n\t\tDATEA,\n\t\tLDATE,\n\t\tMILES,\n\t\tOCCURENCES,\n\t\tCDESCR,\n\t\tCMPL_TYPE,\n\t\tPOLICE_RPT_YN,\n\t\tPURCH_DT,\n\t\tORIG_OWNER_YN,\n\t\tANTI_BRAKES_YN,\n\t\tCRUISE_CONT_YN,\n\t\tNUM_CYLS,\n\t\tDRIVE_TRAIN,\n\t\tFUEL_SYS,\n\t\tFUEL_TYPE,\n\t\tTRANS_TYPE,\n\t\tVEH_SPEED,\n\t\tDOT,\n\t\tTIRE_SIZE,\n\t\tLOC_OF_TIRE,\n\t\tTIRE_FAIL_TYPE,\n\t\tORIG_EQUIP_YN,\n\t\tMANUF_DT,\n\t\tSEAT_TYPE,\n\t\tRESTRAINT_TYE,\n\t\tDEALER_NAME,\n\t\tDEALER_TEL,\n\t\tDEALER_CITY,\n\t\tDEALER_STATE,\n\t\tDEALER_ZIP,\n\t\tPROD_TYPE,\n\t\tREPAIRED_YN,\n\t\tMEDICAL_ATTN,\n\t\tVEHICLES_TOWED_YN\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select2\nunionComplaints sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tComplaints_ID as integer,\n\t\tCMPLID as string,\n\t\tODINO as string,\n\t\tMFR_NAME as string,\n\t\tMAKETXT as string,\n\t\tMODELTXT as string,\n\t\tYEARTXT as string,\n\t\tCRASH as string,\n\t\tFAILDATE as string,\n\t\tFIRE as string,\n\t\tINJURED as decimal(18,0),\n\t\tDEATHS as decimal(18,0),\n\t\tCOMPDESC as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tVIN as string,\n\t\tDATEA as string,\n\t\tLDATE as string,\n\t\tMILES as decimal(18,0),\n\t\tOCCURENCES as decimal(18,0),\n\t\tCDESCR as string,\n\t\tCMPL_TYPE as string,\n\t\tPOLICE_RPT_YN as string,\n\t\tPURCH_DT as string,\n\t\tORIG_OWNER_YN as string,\n\t\tANTI_BRAKES_YN as string,\n\t\tCRUISE_CONT_YN as string,\n\t\tNUM_CYLS as decimal(18,0),\n\t\tDRIVE_TRAIN as string,\n\t\tFUEL_SYS as string,\n\t\tFUEL_TYPE as string,\n\t\tTRANS_TYPE as string,\n\t\tVEH_SPEED as decimal(18,0),\n\t\tDOT as string,\n\t\tTIRE_SIZE as string,\n\t\tLOC_OF_TIRE as string,\n\t\tTIRE_FAIL_TYPE as string,\n\t\tORIG_EQUIP_YN as string,\n\t\tMANUF_DT as string,\n\t\tSEAT_TYPE as string,\n\t\tRESTRAINT_TYE as string,\n\t\tDEALER_NAME as string,\n\t\tDEALER_TEL as string,\n\t\tDEALER_CITY as string,\n\t\tDEALER_STATE as string,\n\t\tDEALER_ZIP as string,\n\t\tPROD_TYPE as string,\n\t\tREPAIRED_YN as string,\n\t\tMEDICAL_ATTN as string,\n\t\tVEHICLES_TOWED_YN as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> destComplaints"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl_New1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AdventureWorks MergeCustomerAddress')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "TableMergeDemo-Flow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "TableMergeDemo-Flow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"Customer": {},
-									"Address": {},
-									"CustomerAddress": {},
-									"CustomerAddressMerged": {}
-								}
-							},
-							"staging": {}
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/TableMergeDemo-Flow')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ComplainsCopyFromWebToBlob')]",
@@ -1089,8 +165,15 @@
 							"sink": {
 								"type": "BlobSink"
 							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true
+							"enableStaging": true,
+							"stagingSettings": {
+								"linkedServiceName": {
+									"referenceName": "staging",
+									"type": "LinkedServiceReference"
+								},
+								"path": "adfdemoblob"
+							},
+							"dataIntegrationUnits": 0
 						},
 						"inputs": [
 							{
@@ -1131,12 +214,12 @@
 							},
 							"sink": {
 								"type": "SqlSink",
-								"writeBatchSize": 100000
+								"writeBatchSize": 100000,
+								"writeBehavior": "insert"
 							},
 							"enableStaging": false,
-							"parallelCopies": 32,
 							"enableSkipIncompatibleRow": true,
-							"dataIntegrationUnits": 32,
+							"dataIntegrationUnits": 0,
 							"translator": {
 								"type": "TabularTranslator",
 								"columnMappings": {
@@ -1226,252 +309,89 @@
 						}
 					},
 					{
-						"name": "Insert New and Changed Records",
-						"type": "SqlServerStoredProcedure",
+						"name": "Send Success Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Archive Source File",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-02.eastus.logic.azure.com:443/workflows/8c6774ef72b341d49e189c6d9fc7227e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qsZ8iz5TeG70Iaf54sQ--KlybPeTAbpRgph4Emknezk",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "Application/json"
+							},
+							"body": {
+								"dataFactoryName": "@{pipeline().DataFactory}",
+								"pipelineName": "@{pipeline().Pipeline}",
+								"receiver": "@pipeline().parameters.receiver"
+							}
+						}
+					},
+					{
+						"name": "Send Failure Email",
+						"type": "WebActivity",
 						"dependsOn": [
 							{
 								"activity": "Extract Text File To Temp Table",
 								"dependencyConditions": [
-									"Succeeded"
+									"Failed"
 								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[sp_Insert_New_and_Changed_Records]"
-						},
-						"linkedServiceName": {
-							"referenceName": "cseferlistestdb1",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Archive Source File",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Insert New and Changed Records",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BlobSource",
-								"recursive": false
 							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "srcComplaintsBlobZip",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ArchiveBlob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]",
-				"[concat(variables('factoryId'), '/datasets/destComplaintsZipBlob')]",
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlob')]",
-				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl')]",
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
-				"[concat(variables('factoryId'), '/datasets/ArchiveBlob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ComplaintsCopyWithDataFlow')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy from HTTP to Blob",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Truncate CMPL Temp",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "HttpSource",
-								"httpRequestTimeout": "0.00:00:00"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true
-						},
-						"inputs": [
-							{
-								"referenceName": "srcComplaintsHttpZip",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "destComplaintsZipBlob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Extract Text File To Temp Table",
-						"type": "Copy",
-						"dependsOn": [
 							{
 								"activity": "Copy from HTTP to Blob",
 								"dependencyConditions": [
-									"Succeeded"
+									"Failed"
+								]
+							},
+							{
+								"activity": "Truncate CMPL Temp",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Archive Source File",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Union Complaints and tmpComplaints",
+								"dependencyConditions": [
+									"Failed"
 								]
 							}
 						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
-							"retryIntervalInSeconds": 30
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "BlobSource",
-								"recursive": false
+							"url": "https://prod-03.eastus.logic.azure.com:443/workflows/8355738f60d84cce99d60f0dcb94cb4f/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tdhxl4qxE72wxNMX6dxFoNdAlcVfsmz1_3khFhhtDYU",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "Application/json"
 							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": 100000
-							},
-							"enableStaging": false,
-							"parallelCopies": 32,
-							"enableSkipIncompatibleRow": true,
-							"dataIntegrationUnits": 32,
-							"translator": {
-								"type": "TabularTranslator",
-								"columnMappings": {
-									"CMPLID": "CMPLID",
-									"ODINO": "ODINO",
-									"MFR_NAME": "MFR_NAME",
-									"MAKETXT": "MAKETXT",
-									"MODELTXT": "MODELTXT",
-									"YEARTXT": "YEARTXT",
-									"CRASH": "CRASH",
-									"FAILDATE": "FAILDATE",
-									"FIRE": "FIRE",
-									"INJURED": "INJURED",
-									"DEATHS": "DEATHS",
-									"COMPDESC": "COMPDESC",
-									"CITY": "CITY",
-									"STATE": "STATE",
-									"VIN": "VIN",
-									"DATEA": "DATEA",
-									"LDATE": "LDATE",
-									"MILES": "MILES",
-									"OCCURENCES": "OCCURENCES",
-									"CDESCR": "CDESCR",
-									"CMPL_TYPE": "CMPL_TYPE",
-									"POLICE_RPT_YN": "POLICE_RPT_YN",
-									"PURCH_DT": "PURCH_DT",
-									"ORIG_OWNER_YN": "ORIG_OWNER_YN",
-									"ANTI_BRAKES_YN": "ANTI_BRAKES_YN",
-									"CRUISE_CONT_YN": "CRUISE_CONT_YN",
-									"NUM_CYLS": "NUM_CYLS",
-									"DRIVE_TRAIN": "DRIVE_TRAIN",
-									"FUEL_SYS": "FUEL_SYS",
-									"FUEL_TYPE": "FUEL_TYPE",
-									"TRANS_TYPE": "TRANS_TYPE",
-									"VEH_SPEED": "VEH_SPEED",
-									"DOT": "DOT",
-									"TIRE_SIZE": "TIRE_SIZE",
-									"LOC_OF_TIRE": "LOC_OF_TIRE",
-									"TIRE_FAIL_TYPE": "TIRE_FAIL_TYPE",
-									"ORIG_EQUIP_YN": "ORIG_EQUIP_YN",
-									"MANUF_DT": "MANUF_DT",
-									"SEAT_TYPE": "SEAT_TYPE",
-									"RESTRAINT_TYPE": "RESTRAINT_TYE",
-									"DEALER_NAME": "DEALER_NAME",
-									"DEALER_TEL": "DEALER_TEL",
-									"DEALER_CITY": "DEALER_CITY",
-									"DEALER_STATE": "DEALER_STATE",
-									"DEALER_ZIP": "DEALER_ZIP",
-									"PROD_TYPE": "PROD_TYPE",
-									"REPAIRED_YN": "REPAIRED_YN",
-									"MEDICAL_ATTN": "MEDICAL_ATTN",
-									"VEHICLES_TOWED_YN": "VEHICLES_TOWED_YN"
-								}
+							"body": {
+								"dataFactoryName": "@{pipeline().DataFactory}",
+								"pipelineName": "@{pipeline().Pipeline}",
+								"receiver": "@pipeline().parameters.receiver"
 							}
-						},
-						"inputs": [
-							{
-								"referenceName": "srcComplaintsBlob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "destComplaintsSQLTempTbl",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Truncate CMPL Temp",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[dbo].[sp_Truncate_CMPL_Temp]"
-						},
-						"linkedServiceName": {
-							"referenceName": "cseferlistestdb1",
-							"type": "LinkedServiceReference"
 						}
 					},
 					{
@@ -1479,7 +399,7 @@
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "UnionForUniqueRecords",
+								"activity": "Union Complaints and tmpComplaints",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1495,7 +415,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "BlobSource",
-								"recursive": false
+								"recursive": true
 							},
 							"sink": {
 								"type": "BlobSink"
@@ -1520,7 +440,7 @@
 						]
 					},
 					{
-						"name": "UnionForUniqueRecords",
+						"name": "Union Complaints and tmpComplaints",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -1531,7 +451,7 @@
 							}
 						],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "1.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -1540,29 +460,38 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "UnionForUniqueRecords",
+								"referenceName": "Union Complaints and tmpComplaints",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"CMPLTemp": {},
-									"Complaints": {},
+									"sqlComplaints": {},
+									"sqlCMPLTemp": {},
 									"destComplaints": {}
 								}
 							},
-							"staging": {}
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
 						}
 					}
 				],
+				"parameters": {
+					"receiver": {
+						"type": "String",
+						"defaultValue": "cseferlis@gmail.com"
+					}
+				},
+				"folder": {
+					"name": "SR"
+				},
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]",
-				"[concat(variables('factoryId'), '/datasets/destComplaintsZipBlob')]",
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlob')]",
-				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl')]",
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
-				"[concat(variables('factoryId'), '/datasets/ArchiveBlob')]",
-				"[concat(variables('factoryId'), '/dataflows/UnionForUniqueRecords')]"
+				"[concat(variables('factoryId'), '/dataflows/Union Complaints and tmpComplaints')]"
 			]
 		},
 		{
@@ -1571,7 +500,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
+				"runtimeState": "Stopped",
 				"pipelines": [
 					{
 						"pipelineReference": {
@@ -1586,8 +515,8 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2018-03-01T02:30:00Z",
-						"timeZone": "UTC",
+						"startTime": "2018-03-01T10:30:00",
+						"timeZone": "EST",
 						"schedule": {
 							"minutes": [
 								30

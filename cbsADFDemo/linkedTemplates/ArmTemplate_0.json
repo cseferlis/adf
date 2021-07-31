@@ -7,18 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "cbsADFDemo"
 		},
-		"integrationRuntime_cbsadfemosa": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "cbsadfemosa"
+		"Archive Blob Container_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Archive Blob Container'"
 		},
 		"AzureDatabricks1_accessToken": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
 		},
-		"AzureSqlDatabaseLnkSvc_connectionString": {
+		"ComplaintsBlobZip_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLnkSvc'"
+			"metadata": "Secure string for 'connectionString' of 'ComplaintsBlobZip'"
 		},
 		"MyAzureBlobLinkedService_connectionString": {
 			"type": "secureString",
@@ -44,6 +43,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'sqldbAWLT'"
 		},
+		"srcComplaintsBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'srcComplaintsBlob'"
+		},
 		"src_sqldbAWLT_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'src_sqldbAWLT'"
@@ -59,12 +62,57 @@
 		"ComplaintsSourceZip_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": ""
+		},
+		"ArchiveBlob_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "@concat('FLAT_CMPL',string(utcnow()),'.zip')"
+		},
+		"ArchiveBlob_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "complaintsarchive"
+		},
+		"destComplaintsZipBlob_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"destComplaintsZipBlob_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob"
+		},
+		"srcComplaintsBlob_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "downloads/folders/Complaints/FLAT_CMPL.zip"
+		},
+		"srcComplaintsBlob_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "FLAT_CMPL.zip"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Archive Blob Container')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('Archive Blob Container_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureDatabricks1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -80,20 +128,21 @@
 					},
 					"newClusterNodeType": "Standard_DS3_v2",
 					"newClusterNumOfWorker": "1",
-					"newClusterVersion": "5.0.x-scala2.11"
+					"newClusterVersion": "5.0.x-scala2.11",
+					"newClusterInitScripts": []
 				}
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseLnkSvc')]",
+			"name": "[concat(parameters('factoryName'), '/ComplaintsBlobZip')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "AzureStorage",
 				"typeProperties": {
-					"connectionString": "[parameters('AzureSqlDatabaseLnkSvc_connectionString')]"
+					"connectionString": "[parameters('ComplaintsBlobZip_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -144,7 +193,8 @@
 					},
 					"newClusterNodeType": "Standard_DS3_v2",
 					"newClusterNumOfWorker": "2:8",
-					"newClusterVersion": "4.0.x-scala2.11"
+					"newClusterVersion": "4.0.x-scala2.11",
+					"newClusterInitScripts": []
 				}
 			},
 			"dependsOn": []
@@ -202,6 +252,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('srcComplaintsBlob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/src_sqldbAWLT')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -228,111 +291,285 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/', parameters('integrationRuntime_cbsadfemosa'))]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "AutoResolve",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLiveInMinutes": 60
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Address')]",
+			"name": "[concat(parameters('factoryName'), '/ArchiveBlob')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "src_sqldbAWLT",
+					"referenceName": "Archive Blob Container",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "SR"
+				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "AddressID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "AddressLine1",
-						"type": "nvarchar"
-					},
-					{
-						"name": "AddressLine2",
-						"type": "nvarchar"
-					},
-					{
-						"name": "City",
-						"type": "nvarchar"
-					},
-					{
-						"name": "StateProvince",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CountryRegion",
-						"type": "nvarchar"
-					},
-					{
-						"name": "PostalCode",
-						"type": "nvarchar"
-					},
-					{
-						"name": "rowguid",
-						"type": "uniqueidentifier"
-					},
-					{
-						"name": "ModifiedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
+				"type": "AzureBlob",
 				"typeProperties": {
-					"tableName": "[[SalesLT].[Address]"
+					"fileName": {
+						"value": "[parameters('ArchiveBlob_properties_typeProperties_fileName')]",
+						"type": "Expression"
+					},
+					"folderPath": "[parameters('ArchiveBlob_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/src_sqldbAWLT')]"
+				"[concat(variables('factoryId'), '/linkedServices/Archive Blob Container')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseLnkSvc",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"typeProperties": {
-					"tableName": "[[SalesLT].[ProductCategory]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLnkSvc')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Complaints')]",
+			"name": "[concat(parameters('factoryName'), '/destComplaintsSQLTempTbl')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
 					"referenceName": "cseferlistestdb1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"structure": [
+					{
+						"name": "CMPLID",
+						"type": "String"
+					},
+					{
+						"name": "ODINO",
+						"type": "String"
+					},
+					{
+						"name": "MFR_NAME",
+						"type": "String"
+					},
+					{
+						"name": "MAKETXT",
+						"type": "String"
+					},
+					{
+						"name": "MODELTXT",
+						"type": "String"
+					},
+					{
+						"name": "YEARTXT",
+						"type": "String"
+					},
+					{
+						"name": "CRASH",
+						"type": "String"
+					},
+					{
+						"name": "FAILDATE",
+						"type": "String"
+					},
+					{
+						"name": "FIRE",
+						"type": "String"
+					},
+					{
+						"name": "INJURED",
+						"type": "Decimal"
+					},
+					{
+						"name": "DEATHS",
+						"type": "Decimal"
+					},
+					{
+						"name": "COMPDESC",
+						"type": "String"
+					},
+					{
+						"name": "CITY",
+						"type": "String"
+					},
+					{
+						"name": "STATE",
+						"type": "String"
+					},
+					{
+						"name": "VIN",
+						"type": "String"
+					},
+					{
+						"name": "DATEA",
+						"type": "String"
+					},
+					{
+						"name": "LDATE",
+						"type": "String"
+					},
+					{
+						"name": "MILES",
+						"type": "Decimal"
+					},
+					{
+						"name": "OCCURENCES",
+						"type": "Decimal"
+					},
+					{
+						"name": "CDESCR",
+						"type": "String"
+					},
+					{
+						"name": "CMPL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "POLICE_RPT_YN",
+						"type": "String"
+					},
+					{
+						"name": "PURCH_DT",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_OWNER_YN",
+						"type": "String"
+					},
+					{
+						"name": "ANTI_BRAKES_YN",
+						"type": "String"
+					},
+					{
+						"name": "CRUISE_CONT_YN",
+						"type": "String"
+					},
+					{
+						"name": "NUM_CYLS",
+						"type": "Decimal"
+					},
+					{
+						"name": "DRIVE_TRAIN",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_SYS",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "TRANS_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "VEH_SPEED",
+						"type": "Decimal"
+					},
+					{
+						"name": "DOT",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_SIZE",
+						"type": "String"
+					},
+					{
+						"name": "LOC_OF_TIRE",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_FAIL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_EQUIP_YN",
+						"type": "String"
+					},
+					{
+						"name": "MANUF_DT",
+						"type": "String"
+					},
+					{
+						"name": "SEAT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "RESTRAINT_TYE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_NAME",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_TEL",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_CITY",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_STATE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_ZIP",
+						"type": "String"
+					},
+					{
+						"name": "PROD_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "REPAIRED_YN",
+						"type": "String"
+					},
+					{
+						"name": "MEDICAL_ATTN",
+						"type": "String"
+					},
+					{
+						"name": "VEHICLES_TOWED_YN",
+						"type": "String"
+					}
+				],
+				"typeProperties": {
+					"tableName": "[[dbo].[CMPL_Temp]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/cseferlistestdb1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/destComplaintsZipBlob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsBlobZip",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": "[parameters('destComplaintsZipBlob_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('destComplaintsZipBlob_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ComplaintsBlobZip')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srcCMPL_Temp')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "cseferlistestdb1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
@@ -552,7 +789,7 @@
 					}
 				],
 				"typeProperties": {
-					"tableName": "[[dbo].[Complaints]"
+					"tableName": "[[dbo].[CMPL_Temp]"
 				}
 			},
 			"dependsOn": [
@@ -560,353 +797,494 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Customer')]",
+			"name": "[concat(parameters('factoryName'), '/srcComplaints')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "src_sqldbAWLT",
+					"referenceName": "destComplaintsDB",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [
 					{
-						"name": "CustomerID",
+						"name": "Complaints_ID",
 						"type": "int",
 						"precision": 10
 					},
 					{
-						"name": "NameStyle",
-						"type": "bit"
-					},
-					{
-						"name": "Title",
+						"name": "CMPLID",
 						"type": "nvarchar"
 					},
 					{
-						"name": "FirstName",
+						"name": "ODINO",
 						"type": "nvarchar"
 					},
 					{
-						"name": "MiddleName",
+						"name": "MFR_NAME",
 						"type": "nvarchar"
 					},
 					{
-						"name": "LastName",
+						"name": "MAKETXT",
 						"type": "nvarchar"
 					},
 					{
-						"name": "Suffix",
+						"name": "MODELTXT",
 						"type": "nvarchar"
 					},
 					{
-						"name": "CompanyName",
+						"name": "YEARTXT",
 						"type": "nvarchar"
 					},
 					{
-						"name": "SalesPerson",
+						"name": "CRASH",
 						"type": "nvarchar"
 					},
 					{
-						"name": "EmailAddress",
+						"name": "FAILDATE",
 						"type": "nvarchar"
 					},
 					{
-						"name": "Phone",
+						"name": "FIRE",
 						"type": "nvarchar"
 					},
 					{
-						"name": "PasswordHash",
-						"type": "varchar"
+						"name": "INJURED",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
 					},
 					{
-						"name": "PasswordSalt",
-						"type": "varchar"
+						"name": "DEATHS",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
 					},
 					{
-						"name": "rowguid",
-						"type": "uniqueidentifier"
+						"name": "COMPDESC",
+						"type": "nvarchar"
 					},
 					{
-						"name": "ModifiedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
+						"name": "CITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "STATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VIN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DATEA",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LDATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MILES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "OCCURENCES",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "CDESCR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CMPL_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "POLICE_RPT_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PURCH_DT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ORIG_OWNER_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ANTI_BRAKES_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CRUISE_CONT_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NUM_CYLS",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "DRIVE_TRAIN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUEL_SYS",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FUEL_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TRANS_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VEH_SPEED",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 0
+					},
+					{
+						"name": "DOT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIRE_SIZE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LOC_OF_TIRE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TIRE_FAIL_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ORIG_EQUIP_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MANUF_DT",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SEAT_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RESTRAINT_TYE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DEALER_NAME",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DEALER_TEL",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DEALER_CITY",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DEALER_STATE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "DEALER_ZIP",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PROD_TYPE",
+						"type": "nvarchar"
+					},
+					{
+						"name": "REPAIRED_YN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MEDICAL_ATTN",
+						"type": "nvarchar"
+					},
+					{
+						"name": "VEHICLES_TOWED_YN",
+						"type": "nvarchar"
 					}
 				],
 				"typeProperties": {
-					"tableName": "[[SalesLT].[Customer]"
+					"schema": "dbo",
+					"table": "Complaints"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/src_sqldbAWLT')]"
+				"[concat(variables('factoryId'), '/linkedServices/destComplaintsDB')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CustomerAddress')]",
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlob')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "src_sqldbAWLT",
+					"referenceName": "srcComplaintsBlob",
 					"type": "LinkedServiceReference"
 				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CustomerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "AddressID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "AddressType",
-						"type": "nvarchar"
-					},
-					{
-						"name": "rowguid",
-						"type": "uniqueidentifier"
-					},
-					{
-						"name": "ModifiedDate",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					},
-					{
-						"name": "TieBreaker",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[SalesLT].[CustomerAddress]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/src_sqldbAWLT')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CustomerAddressMerged')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "src_sqldbAWLT",
-					"type": "LinkedServiceReference"
+				"folder": {
+					"name": "SR"
 				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "CustomerID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CompanyName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "FirstName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "MiddleName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "LastName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "EmailAddress",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Phone",
-						"type": "varchar"
-					},
-					{
-						"name": "AddressLine1",
-						"type": "nvarchar"
-					},
-					{
-						"name": "AddressLine2",
-						"type": "nvarchar"
-					},
-					{
-						"name": "City",
-						"type": "nvarchar"
-					},
-					{
-						"name": "StateProvince",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CountryRegion",
-						"type": "nvarchar"
-					},
-					{
-						"name": "PostalCode",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"tableName": "[[dbo].[CustomerAddressMerged]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/src_sqldbAWLT')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/adb_AW_Address')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseLnkSvc",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
+				"type": "AzureBlob",
 				"structure": [
 					{
-						"name": "AddressID",
-						"type": "Int32"
-					},
-					{
-						"name": "AddressLine1",
+						"name": "CMPLID",
 						"type": "String"
 					},
 					{
-						"name": "AddressLine2",
+						"name": "ODINO",
 						"type": "String"
 					},
 					{
-						"name": "City",
+						"name": "MFR_NAME",
 						"type": "String"
 					},
 					{
-						"name": "StateProvince",
+						"name": "MAKETXT",
 						"type": "String"
 					},
 					{
-						"name": "CountryRegion",
+						"name": "MODELTXT",
 						"type": "String"
 					},
 					{
-						"name": "PostalCode",
+						"name": "YEARTXT",
 						"type": "String"
 					},
 					{
-						"name": "rowguid",
-						"type": "Guid"
+						"name": "CRASH",
+						"type": "String"
 					},
 					{
-						"name": "ModifiedDate",
-						"type": "DateTime"
+						"name": "FAILDATE",
+						"type": "String"
+					},
+					{
+						"name": "FIRE",
+						"type": "String"
+					},
+					{
+						"name": "INJURED",
+						"type": "Int64"
+					},
+					{
+						"name": "DEATHS",
+						"type": "Int64"
+					},
+					{
+						"name": "COMPDESC",
+						"type": "String"
+					},
+					{
+						"name": "CITY",
+						"type": "String"
+					},
+					{
+						"name": "STATE",
+						"type": "String"
+					},
+					{
+						"name": "VIN",
+						"type": "String"
+					},
+					{
+						"name": "DATEA",
+						"type": "String"
+					},
+					{
+						"name": "LDATE",
+						"type": "String"
+					},
+					{
+						"name": "MILES",
+						"type": "Int64"
+					},
+					{
+						"name": "OCCURENCES",
+						"type": "Int64"
+					},
+					{
+						"name": "CDESCR",
+						"type": "String"
+					},
+					{
+						"name": "CMPL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "POLICE_RPT_YN",
+						"type": "String"
+					},
+					{
+						"name": "PURCH_DT",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_OWNER_YN",
+						"type": "String"
+					},
+					{
+						"name": "ANTI_BRAKES_YN",
+						"type": "String"
+					},
+					{
+						"name": "CRUISE_CONT_YN",
+						"type": "String"
+					},
+					{
+						"name": "NUM_CYLS",
+						"type": "Int64"
+					},
+					{
+						"name": "DRIVE_TRAIN",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_SYS",
+						"type": "String"
+					},
+					{
+						"name": "FUEL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "TRANS_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "VEH_SPEED",
+						"type": "Int64"
+					},
+					{
+						"name": "DOT",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_SIZE",
+						"type": "String"
+					},
+					{
+						"name": "LOC_OF_TIRE",
+						"type": "String"
+					},
+					{
+						"name": "TIRE_FAIL_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "ORIG_EQUIP_YN",
+						"type": "String"
+					},
+					{
+						"name": "MANUF_DT",
+						"type": "String"
+					},
+					{
+						"name": "SEAT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "RESTRAINT_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_NAME",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_TEL",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_CITY",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_STATE",
+						"type": "String"
+					},
+					{
+						"name": "DEALER_ZIP",
+						"type": "String"
+					},
+					{
+						"name": "PROD_TYPE",
+						"type": "String"
+					},
+					{
+						"name": "REPAIRED_YN",
+						"type": "String"
+					},
+					{
+						"name": "MEDICAL_ATTN",
+						"type": "String"
+					},
+					{
+						"name": "VEHICLES_TOWED_YN",
+						"type": "String"
 					}
 				],
 				"typeProperties": {
-					"tableName": "[[SalesLT].[Address]"
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": "\t",
+						"treatEmptyAsNull": true
+					},
+					"compression": {
+						"type": "ZipDeflate",
+						"level": "Fastest"
+					},
+					"fileName": "[parameters('srcComplaintsBlob_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('srcComplaintsBlob_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLnkSvc')]"
+				"[concat(variables('factoryId'), '/linkedServices/srcComplaintsBlob')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/adb_AW_Customer')]",
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlobZip')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseLnkSvc",
+					"referenceName": "ComplaintsBlobZip",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "SR"
+				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"structure": [
-					{
-						"name": "CustomerID",
-						"type": "Int32"
-					},
-					{
-						"name": "NameStyle",
-						"type": "Boolean"
-					},
-					{
-						"name": "Title",
-						"type": "String"
-					},
-					{
-						"name": "FirstName",
-						"type": "String"
-					},
-					{
-						"name": "MiddleName",
-						"type": "String"
-					},
-					{
-						"name": "LastName",
-						"type": "String"
-					},
-					{
-						"name": "Suffix",
-						"type": "String"
-					},
-					{
-						"name": "CompanyName",
-						"type": "String"
-					},
-					{
-						"name": "SalesPerson",
-						"type": "String"
-					},
-					{
-						"name": "EmailAddress",
-						"type": "String"
-					},
-					{
-						"name": "Phone",
-						"type": "String"
-					},
-					{
-						"name": "PasswordHash",
-						"type": "String"
-					},
-					{
-						"name": "PasswordSalt",
-						"type": "String"
-					},
-					{
-						"name": "rowguid",
-						"type": "Guid"
-					},
-					{
-						"name": "ModifiedDate",
-						"type": "DateTime"
-					}
-				],
+				"type": "AzureBlob",
 				"typeProperties": {
-					"tableName": "[[SalesLT].[Customer]"
+					"fileName": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLnkSvc')]"
+				"[concat(variables('factoryId'), '/linkedServices/ComplaintsBlobZip')]"
 			]
 		}
 	]

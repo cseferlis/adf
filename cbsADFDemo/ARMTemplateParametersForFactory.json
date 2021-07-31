@@ -5,16 +5,10 @@
 		"factoryName": {
 			"value": "cbsADFDemo"
 		},
-		"integrationRuntime_cbsadfemosa": {
-			"value": "cbsadfemosa"
-		},
 		"Archive Blob Container_connectionString": {
 			"value": ""
 		},
 		"AzureDatabricks1_accessToken": {
-			"value": ""
-		},
-		"AzureSqlDatabaseLnkSvc_connectionString": {
 			"value": ""
 		},
 		"ComplaintsBlobZip_connectionString": {
@@ -51,22 +45,22 @@
 			"value": "@concat('FLAT_CMPL',string(utcnow()),'.zip')"
 		},
 		"ArchiveBlob_properties_typeProperties_folderPath": {
-			"value": "archive"
+			"value": "complaintsarchive"
 		},
 		"destComplaintsZipBlob_properties_typeProperties_fileName": {
-			"value": "FLAT_CMPL.zip"
+			"value": ""
 		},
 		"destComplaintsZipBlob_properties_typeProperties_folderPath": {
-			"value": "adfdemoblob/downloads/folders/Complaints"
+			"value": "adfdemoblob"
 		},
 		"srcComplaintsBlob_properties_typeProperties_fileName": {
-			"value": "FLAT_CMPL.zip"
+			"value": "downloads/folders/Complaints/FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlob_properties_typeProperties_folderPath": {
-			"value": "adfdemoblob/downloads/folders/Complaints"
+			"value": "adfdemoblob"
 		},
 		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
-			"value": "*.zip"
+			"value": "FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
 			"value": "adfdemoblob/downloads/folders/Complaints"

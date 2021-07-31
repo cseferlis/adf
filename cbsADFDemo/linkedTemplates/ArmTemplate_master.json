@@ -7,11 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "cbsADFDemo"
 		},
-		"integrationRuntime_cbsadfemosa": {
-			"type": "string",
-			"metadata": "Integration runtime name",
-			"defaultValue": "cbsadfemosa"
-		},
 		"Archive Blob Container_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Archive Blob Container'"
@@ -19,10 +14,6 @@
 		"AzureDatabricks1_accessToken": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
-		},
-		"AzureSqlDatabaseLnkSvc_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLnkSvc'"
 		},
 		"ComplaintsBlobZip_connectionString": {
 			"type": "secureString",
@@ -70,27 +61,27 @@
 		},
 		"ArchiveBlob_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "archive"
+			"defaultValue": "complaintsarchive"
 		},
 		"destComplaintsZipBlob_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "FLAT_CMPL.zip"
+			"defaultValue": ""
 		},
 		"destComplaintsZipBlob_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
+			"defaultValue": "adfdemoblob"
 		},
 		"srcComplaintsBlob_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "FLAT_CMPL.zip"
+			"defaultValue": "downloads/folders/Complaints/FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlob_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
+			"defaultValue": "adfdemoblob"
 		},
 		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "*.zip"
+			"defaultValue": "FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
 			"type": "string",
@@ -118,7 +109,7 @@
 	},
 	"resources": [
 		{
-			"name": "ArmTemplate_0",
+			"name": "cbsADFDemo_ArmTemplate_0",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2018-02-01",
 			"properties": {
@@ -131,14 +122,14 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"integrationRuntime_cbsadfemosa": {
-						"value": "[parameters('integrationRuntime_cbsadfemosa')]"
+					"Archive Blob Container_connectionString": {
+						"value": "[parameters('Archive Blob Container_connectionString')]"
 					},
 					"AzureDatabricks1_accessToken": {
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
-					"AzureSqlDatabaseLnkSvc_connectionString": {
-						"value": "[parameters('AzureSqlDatabaseLnkSvc_connectionString')]"
+					"ComplaintsBlobZip_connectionString": {
+						"value": "[parameters('ComplaintsBlobZip_connectionString')]"
 					},
 					"MyAzureBlobLinkedService_connectionString": {
 						"value": "[parameters('MyAzureBlobLinkedService_connectionString')]"
@@ -158,6 +149,9 @@
 					"sqldbAWLT_connectionString": {
 						"value": "[parameters('sqldbAWLT_connectionString')]"
 					},
+					"srcComplaintsBlob_connectionString": {
+						"value": "[parameters('srcComplaintsBlob_connectionString')]"
+					},
 					"src_sqldbAWLT_connectionString": {
 						"value": "[parameters('src_sqldbAWLT_connectionString')]"
 					},
@@ -169,33 +163,6 @@
 					},
 					"ComplaintsSourceZip_properties_typeProperties_username": {
 						"value": "[parameters('ComplaintsSourceZip_properties_typeProperties_username')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "ArmTemplate_1",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2018-02-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
-					},
-					"Archive Blob Container_connectionString": {
-						"value": "[parameters('Archive Blob Container_connectionString')]"
-					},
-					"ComplaintsBlobZip_connectionString": {
-						"value": "[parameters('ComplaintsBlobZip_connectionString')]"
-					},
-					"srcComplaintsBlob_connectionString": {
-						"value": "[parameters('srcComplaintsBlob_connectionString')]"
 					},
 					"ArchiveBlob_properties_typeProperties_fileName": {
 						"value": "[parameters('ArchiveBlob_properties_typeProperties_fileName')]"
@@ -223,8 +190,26 @@
 					}
 				}
 			},
+			"dependsOn": []
+		},
+		{
+			"name": "cbsADFDemo_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
 			"dependsOn": [
-				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+				"[resourceId('Microsoft.Resources/deployments', 'cbsADFDemo_ArmTemplate_0')]"
 			]
 		}
 	]
