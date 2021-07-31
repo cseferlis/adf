@@ -72,6 +72,18 @@
 						"dependencyConditions": [
 							"Failed"
 						]
+					},
+					{
+						"activity": "Move from Http to Blob as zip",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
 				],
 				"policy": {
@@ -142,7 +154,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Extract Text File To Temp Table_copy1",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -211,7 +223,7 @@
 				]
 			},
 			{
-				"name": "Extract Text File To Temp Table_copy1",
+				"name": "Copy data1",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -224,7 +236,9 @@
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
-					"retryIntervalInSeconds": 30
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
@@ -233,66 +247,10 @@
 						"recursive": true
 					},
 					"sink": {
-						"type": "SqlSink",
-						"writeBatchSize": 100000,
+						"type": "AzureSqlSink",
 						"writeBehavior": "insert"
 					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"translator": {
-						"type": "TabularTranslator",
-						"columnMappings": {
-							"CMPLID": "CMPLID",
-							"ODINO": "ODINO",
-							"MFR_NAME": "MFR_NAME",
-							"MAKETXT": "MAKETXT",
-							"MODELTXT": "MODELTXT",
-							"YEARTXT": "YEARTXT",
-							"CRASH": "CRASH",
-							"FAILDATE": "FAILDATE",
-							"FIRE": "FIRE",
-							"INJURED": "INJURED",
-							"DEATHS": "DEATHS",
-							"COMPDESC": "COMPDESC",
-							"CITY": "CITY",
-							"STATE": "STATE",
-							"VIN": "VIN",
-							"DATEA": "DATEA",
-							"LDATE": "LDATE",
-							"MILES": "MILES",
-							"OCCURENCES": "OCCURENCES",
-							"CDESCR": "CDESCR",
-							"CMPL_TYPE": "CMPL_TYPE",
-							"POLICE_RPT_YN": "POLICE_RPT_YN",
-							"PURCH_DT": "PURCH_DT",
-							"ORIG_OWNER_YN": "ORIG_OWNER_YN",
-							"ANTI_BRAKES_YN": "ANTI_BRAKES_YN",
-							"CRUISE_CONT_YN": "CRUISE_CONT_YN",
-							"NUM_CYLS": "NUM_CYLS",
-							"DRIVE_TRAIN": "DRIVE_TRAIN",
-							"FUEL_SYS": "FUEL_SYS",
-							"FUEL_TYPE": "FUEL_TYPE",
-							"TRANS_TYPE": "TRANS_TYPE",
-							"VEH_SPEED": "VEH_SPEED",
-							"DOT": "DOT",
-							"TIRE_SIZE": "TIRE_SIZE",
-							"LOC_OF_TIRE": "LOC_OF_TIRE",
-							"TIRE_FAIL_TYPE": "TIRE_FAIL_TYPE",
-							"ORIG_EQUIP_YN": "ORIG_EQUIP_YN",
-							"MANUF_DT": "MANUF_DT",
-							"SEAT_TYPE": "SEAT_TYPE",
-							"RESTRAINT_TYPE": "RESTRAINT_TYE",
-							"DEALER_NAME": "DEALER_NAME",
-							"DEALER_TEL": "DEALER_TEL",
-							"DEALER_CITY": "DEALER_CITY",
-							"DEALER_STATE": "DEALER_STATE",
-							"DEALER_ZIP": "DEALER_ZIP",
-							"PROD_TYPE": "PROD_TYPE",
-							"REPAIRED_YN": "REPAIRED_YN",
-							"MEDICAL_ATTN": "MEDICAL_ATTN",
-							"VEHICLES_TOWED_YN": "VEHICLES_TOWED_YN"
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
