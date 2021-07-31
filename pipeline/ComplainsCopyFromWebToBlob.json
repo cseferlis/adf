@@ -78,6 +78,12 @@
 						"dependencyConditions": [
 							"Failed"
 						]
+					},
+					{
+						"activity": "Send Zip to Archive",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
 				],
 				"policy": {
