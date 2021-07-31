@@ -25,7 +25,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Archive Source File",
+						"activity": "Send Zip to Archive",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -57,12 +57,6 @@
 				"dependsOn": [
 					{
 						"activity": "Truncate CMPL Temp",
-						"dependencyConditions": [
-							"Failed"
-						]
-					},
-					{
-						"activity": "Archive Source File",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -105,49 +99,6 @@
 						"receiver": "@pipeline().parameters.receiver"
 					}
 				}
-			},
-			{
-				"name": "Archive Source File",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Union Complaints and tmpComplaints",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "BlobSource",
-						"recursive": true
-					},
-					"sink": {
-						"type": "BlobSink"
-					},
-					"enableStaging": false,
-					"enableSkipIncompatibleRow": true,
-					"dataIntegrationUnits": 0
-				},
-				"inputs": [
-					{
-						"referenceName": "srcComplaintsBlobZip",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ArchiveBlob",
-						"type": "DatasetReference"
-					}
-				]
 			},
 			{
 				"name": "Union Complaints and tmpComplaints",
@@ -261,6 +212,48 @@
 				"outputs": [
 					{
 						"referenceName": "destComplaintsSQLTempTbl",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Send Zip to Archive",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Union Complaints and tmpComplaints",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "srcComplaintsBlobZip",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ArchiveBlob",
 						"type": "DatasetReference"
 					}
 				]
