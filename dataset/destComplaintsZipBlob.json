@@ -8,6 +8,7 @@
 		"folder": {
 			"name": "SR"
 		},
+		"annotations": [],
 		"type": "AzureBlob",
 		"typeProperties": {
 			"fileName": "",
