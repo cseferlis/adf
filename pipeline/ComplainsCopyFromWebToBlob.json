@@ -3,59 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy from HTTP to Blob",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Truncate CMPL Temp",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "HttpSource",
-						"httpRequestTimeout": "0.00:00:00"
-					},
-					"sink": {
-						"type": "BlobSink"
-					},
-					"enableStaging": true,
-					"stagingSettings": {
-						"linkedServiceName": {
-							"referenceName": "staging",
-							"type": "LinkedServiceReference"
-						},
-						"path": "adfdemoblob"
-					},
-					"dataIntegrationUnits": 0
-				},
-				"inputs": [
-					{
-						"referenceName": "srcComplaintsHttpZip",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "destComplaintsZipBlob",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
 				"name": "Extract Text File To Temp Table",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Copy from HTTP to Blob",
+						"activity": "Copy data1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -208,12 +160,6 @@
 						]
 					},
 					{
-						"activity": "Copy from HTTP to Blob",
-						"dependencyConditions": [
-							"Failed"
-						]
-					},
-					{
 						"activity": "Truncate CMPL Temp",
 						"dependencyConditions": [
 							"Failed"
@@ -325,6 +271,48 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Truncate CMPL Temp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "srcComplaintsBlobZip",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "destComplaintsZipBlob",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"parameters": {
