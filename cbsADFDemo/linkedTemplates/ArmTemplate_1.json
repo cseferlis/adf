@@ -6,6 +6,14 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "cbsADFDemo"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
+			"type": "string",
+			"defaultValue": "FLAT_CMPL.zip"
+		},
+		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
+			"type": "string",
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"variables": {
@@ -13,12 +21,33 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlobZip')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsBlobZip",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]",
+					"folderPath": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/srcComplaintsHttpZip')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "ComplaintsSourceZip",
+					"referenceName": "NHTSADownload",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
@@ -84,7 +113,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Union Complaints and tmpComplaints')]",
@@ -141,61 +172,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy from HTTP to Blob",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Truncate CMPL Temp",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "HttpSource",
-								"httpRequestTimeout": "0.00:00:00"
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": true,
-							"stagingSettings": {
-								"linkedServiceName": {
-									"referenceName": "staging",
-									"type": "LinkedServiceReference"
-								},
-								"path": "adfdemoblob"
-							},
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "srcComplaintsHttpZip",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "destComplaintsZipBlob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
 						"name": "Extract Text File To Temp Table",
 						"type": "Copy",
 						"dependsOn": [
 							{
-								"activity": "Copy from HTTP to Blob",
+								"activity": "Move from Http to Blob as zip",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -350,12 +331,6 @@
 								]
 							},
 							{
-								"activity": "Copy from HTTP to Blob",
-								"dependencyConditions": [
-									"Failed"
-								]
-							},
-							{
 								"activity": "Truncate CMPL Temp",
 								"dependencyConditions": [
 									"Failed"
@@ -476,6 +451,50 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Move from Http to Blob as zip",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate CMPL Temp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "HttpSource",
+								"httpRequestTimeout": "00:01:40"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsHttpZip",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "destComplaintsZipBlob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"parameters": {
@@ -490,8 +509,9 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]",
-				"[concat(variables('factoryId'), '/dataflows/Union Complaints and tmpComplaints')]"
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
+				"[concat(variables('factoryId'), '/dataflows/Union Complaints and tmpComplaints')]",
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]"
 			]
 		},
 		{

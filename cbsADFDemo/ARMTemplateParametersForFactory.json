@@ -70,6 +70,9 @@
 		},
 		"ComplaintsSourceZip_properties_typeProperties_username": {
 			"value": ""
+		},
+		"NHTSADownload_properties_typeProperties_url": {
+			"value": "https://www-odi.nhtsa.dot.gov"
 		}
 	}
 }

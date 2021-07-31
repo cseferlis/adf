@@ -63,6 +63,10 @@
 			"type": "string",
 			"defaultValue": ""
 		},
+		"NHTSADownload_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www-odi.nhtsa.dot.gov"
+		},
 		"ArchiveBlob_properties_typeProperties_fileName": {
 			"type": "string",
 			"defaultValue": "@concat('FLAT_CMPL',string(utcnow()),'.zip')"
@@ -86,14 +90,6 @@
 		"srcComplaintsBlob_properties_typeProperties_folderPath": {
 			"type": "string",
 			"defaultValue": "adfdemoblob"
-		},
-		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
-			"type": "string",
-			"defaultValue": "FLAT_CMPL.zip"
-		},
-		"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
-			"type": "string",
-			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"variables": {
@@ -286,6 +282,21 @@
 				"type": "AzureStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('staging_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NHTSADownload')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('NHTSADownload_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
@@ -1262,29 +1273,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/srcComplaintsBlob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlobZip')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ComplaintsBlobZip",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "SR"
-				},
-				"annotations": [],
-				"type": "AzureBlob",
-				"typeProperties": {
-					"fileName": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]",
-					"folderPath": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ComplaintsBlobZip')]"
 			]
 		}
 	]

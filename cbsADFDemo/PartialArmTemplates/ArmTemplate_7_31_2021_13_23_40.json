@@ -1,0 +1,432 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "cbsADFDemo"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/ComplainsCopyFromWebToBlob')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Extract Text File To Temp Table",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Move from Http to Blob as zip",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": false
+							},
+							"sink": {
+								"type": "SqlSink",
+								"writeBatchSize": 100000,
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"dataIntegrationUnits": 0,
+							"translator": {
+								"type": "TabularTranslator",
+								"columnMappings": {
+									"CMPLID": "CMPLID",
+									"ODINO": "ODINO",
+									"MFR_NAME": "MFR_NAME",
+									"MAKETXT": "MAKETXT",
+									"MODELTXT": "MODELTXT",
+									"YEARTXT": "YEARTXT",
+									"CRASH": "CRASH",
+									"FAILDATE": "FAILDATE",
+									"FIRE": "FIRE",
+									"INJURED": "INJURED",
+									"DEATHS": "DEATHS",
+									"COMPDESC": "COMPDESC",
+									"CITY": "CITY",
+									"STATE": "STATE",
+									"VIN": "VIN",
+									"DATEA": "DATEA",
+									"LDATE": "LDATE",
+									"MILES": "MILES",
+									"OCCURENCES": "OCCURENCES",
+									"CDESCR": "CDESCR",
+									"CMPL_TYPE": "CMPL_TYPE",
+									"POLICE_RPT_YN": "POLICE_RPT_YN",
+									"PURCH_DT": "PURCH_DT",
+									"ORIG_OWNER_YN": "ORIG_OWNER_YN",
+									"ANTI_BRAKES_YN": "ANTI_BRAKES_YN",
+									"CRUISE_CONT_YN": "CRUISE_CONT_YN",
+									"NUM_CYLS": "NUM_CYLS",
+									"DRIVE_TRAIN": "DRIVE_TRAIN",
+									"FUEL_SYS": "FUEL_SYS",
+									"FUEL_TYPE": "FUEL_TYPE",
+									"TRANS_TYPE": "TRANS_TYPE",
+									"VEH_SPEED": "VEH_SPEED",
+									"DOT": "DOT",
+									"TIRE_SIZE": "TIRE_SIZE",
+									"LOC_OF_TIRE": "LOC_OF_TIRE",
+									"TIRE_FAIL_TYPE": "TIRE_FAIL_TYPE",
+									"ORIG_EQUIP_YN": "ORIG_EQUIP_YN",
+									"MANUF_DT": "MANUF_DT",
+									"SEAT_TYPE": "SEAT_TYPE",
+									"RESTRAINT_TYPE": "RESTRAINT_TYE",
+									"DEALER_NAME": "DEALER_NAME",
+									"DEALER_TEL": "DEALER_TEL",
+									"DEALER_CITY": "DEALER_CITY",
+									"DEALER_STATE": "DEALER_STATE",
+									"DEALER_ZIP": "DEALER_ZIP",
+									"PROD_TYPE": "PROD_TYPE",
+									"REPAIRED_YN": "REPAIRED_YN",
+									"MEDICAL_ATTN": "MEDICAL_ATTN",
+									"VEHICLES_TOWED_YN": "VEHICLES_TOWED_YN"
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlob",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "destComplaintsSQLTempTbl",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Truncate CMPL Temp",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[sp_Truncate_CMPL_Temp]"
+						},
+						"linkedServiceName": {
+							"referenceName": "cseferlistestdb1",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Send Success Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Archive Source File",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-02.eastus.logic.azure.com:443/workflows/8c6774ef72b341d49e189c6d9fc7227e/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qsZ8iz5TeG70Iaf54sQ--KlybPeTAbpRgph4Emknezk",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "Application/json"
+							},
+							"body": {
+								"dataFactoryName": "@{pipeline().DataFactory}",
+								"pipelineName": "@{pipeline().Pipeline}",
+								"receiver": "@pipeline().parameters.receiver"
+							}
+						}
+					},
+					{
+						"name": "Send Failure Email",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Extract Text File To Temp Table",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Truncate CMPL Temp",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Archive Source File",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Union Complaints and tmpComplaints",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-03.eastus.logic.azure.com:443/workflows/8355738f60d84cce99d60f0dcb94cb4f/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tdhxl4qxE72wxNMX6dxFoNdAlcVfsmz1_3khFhhtDYU",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "Application/json"
+							},
+							"body": {
+								"dataFactoryName": "@{pipeline().DataFactory}",
+								"pipelineName": "@{pipeline().Pipeline}",
+								"receiver": "@pipeline().parameters.receiver"
+							}
+						}
+					},
+					{
+						"name": "Archive Source File",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Union Complaints and tmpComplaints",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"dataIntegrationUnits": 0
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlobZip",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ArchiveBlob",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Union Complaints and tmpComplaints",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Extract Text File To Temp Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Union Complaints and tmpComplaints",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Move from Http to Blob as zip",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate CMPL Temp",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "HttpSource",
+								"httpRequestTimeout": "00:01:40"
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsHttpZip",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "destComplaintsZipBlob",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"parameters": {
+					"receiver": {
+						"type": "String",
+						"defaultValue": "cseferlis@gmail.com"
+					}
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]",
+				"[concat(variables('factoryId'), '/datasets/destComplaintsZipBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/destComplaintsZipBlob')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsBlobZip",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": "",
+					"folderPath": "adfdemoblob"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsBlobZip')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ComplaintsBlobZip",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": [],
+				"type": "AzureBlob",
+				"typeProperties": {
+					"fileName": "FLAT_CMPL.zip",
+					"folderPath": "adfdemoblob/downloads/folders/Complaints"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/srcComplaintsHttpZip')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NHTSADownload",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SR"
+				},
+				"annotations": [],
+				"type": "HttpFile",
+				"typeProperties": {
+					"relativeUrl": "/downloads/folders/Complaints/FLAT_CMPL.zip",
+					"requestMethod": "GET"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NHTSADownload')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NHTSADownload')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "https://www-odi.nhtsa.dot.gov",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -95,6 +95,10 @@
 			"type": "string",
 			"defaultValue": ""
 		},
+		"NHTSADownload_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www-odi.nhtsa.dot.gov"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -164,6 +168,9 @@
 					"ComplaintsSourceZip_properties_typeProperties_username": {
 						"value": "[parameters('ComplaintsSourceZip_properties_typeProperties_username')]"
 					},
+					"NHTSADownload_properties_typeProperties_url": {
+						"value": "[parameters('NHTSADownload_properties_typeProperties_url')]"
+					},
 					"ArchiveBlob_properties_typeProperties_fileName": {
 						"value": "[parameters('ArchiveBlob_properties_typeProperties_fileName')]"
 					},
@@ -181,12 +188,6 @@
 					},
 					"srcComplaintsBlob_properties_typeProperties_folderPath": {
 						"value": "[parameters('srcComplaintsBlob_properties_typeProperties_folderPath')]"
-					},
-					"srcComplaintsBlobZip_properties_typeProperties_fileName": {
-						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]"
-					},
-					"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
-						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
 					}
 				}
 			},
@@ -205,6 +206,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"srcComplaintsBlobZip_properties_typeProperties_fileName": {
+						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_fileName')]"
+					},
+					"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
+						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
 					}
 				}
 			},
