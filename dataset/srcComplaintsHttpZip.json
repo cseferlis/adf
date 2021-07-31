@@ -8,10 +8,11 @@
 		"folder": {
 			"name": "SR"
 		},
+		"annotations": [],
 		"type": "HttpFile",
 		"typeProperties": {
 			"relativeUrl": "/downloads/folders/Complaints/FLAT_CMPL.zip",
-			"requestMethod": "Get"
+			"requestMethod": "GET"
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
