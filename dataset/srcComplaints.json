@@ -5,6 +5,9 @@
 			"referenceName": "destComplaintsDB",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "SR"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
