@@ -85,11 +85,11 @@
 		},
 		"srcComplaintsBlob_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "downloads/folders/Complaints/FLAT_CMPL.zip"
+			"defaultValue": "FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlob_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "adfdemoblob"
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
 		}
 	},
 	"variables": {
@@ -1098,11 +1098,11 @@
 					},
 					{
 						"name": "INJURED",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "DEATHS",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "COMPDESC",
@@ -1130,11 +1130,11 @@
 					},
 					{
 						"name": "MILES",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "OCCURENCES",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "CDESCR",
@@ -1166,7 +1166,7 @@
 					},
 					{
 						"name": "NUM_CYLS",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "DRIVE_TRAIN",
@@ -1186,7 +1186,7 @@
 					},
 					{
 						"name": "VEH_SPEED",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "DOT",
@@ -1217,7 +1217,7 @@
 						"type": "String"
 					},
 					{
-						"name": "RESTRAINT_TYPE",
+						"name": "RESTRAINT_TYE",
 						"type": "String"
 					},
 					{
@@ -1261,7 +1261,13 @@
 					"format": {
 						"type": "TextFormat",
 						"columnDelimiter": "\t",
-						"treatEmptyAsNull": true
+						"rowDelimiter": "\n",
+						"quoteChar": "\"",
+						"nullValue": "\\N",
+						"encodingName": null,
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
 					},
 					"compression": {
 						"type": "ZipDeflate",

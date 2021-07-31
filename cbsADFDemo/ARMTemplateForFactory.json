@@ -73,11 +73,11 @@
 		},
 		"srcComplaintsBlob_properties_typeProperties_fileName": {
 			"type": "string",
-			"defaultValue": "downloads/folders/Complaints/FLAT_CMPL.zip"
+			"defaultValue": "FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlob_properties_typeProperties_folderPath": {
 			"type": "string",
-			"defaultValue": "adfdemoblob"
+			"defaultValue": "adfdemoblob/downloads/folders/Complaints"
 		},
 		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
 			"type": "string",
@@ -167,106 +167,6 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Extract Text File To Temp Table",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Move from Http to Blob as zip",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BlobSource",
-								"recursive": false
-							},
-							"sink": {
-								"type": "SqlSink",
-								"writeBatchSize": 100000,
-								"writeBehavior": "insert"
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"dataIntegrationUnits": 0,
-							"translator": {
-								"type": "TabularTranslator",
-								"columnMappings": {
-									"CMPLID": "CMPLID",
-									"ODINO": "ODINO",
-									"MFR_NAME": "MFR_NAME",
-									"MAKETXT": "MAKETXT",
-									"MODELTXT": "MODELTXT",
-									"YEARTXT": "YEARTXT",
-									"CRASH": "CRASH",
-									"FAILDATE": "FAILDATE",
-									"FIRE": "FIRE",
-									"INJURED": "INJURED",
-									"DEATHS": "DEATHS",
-									"COMPDESC": "COMPDESC",
-									"CITY": "CITY",
-									"STATE": "STATE",
-									"VIN": "VIN",
-									"DATEA": "DATEA",
-									"LDATE": "LDATE",
-									"MILES": "MILES",
-									"OCCURENCES": "OCCURENCES",
-									"CDESCR": "CDESCR",
-									"CMPL_TYPE": "CMPL_TYPE",
-									"POLICE_RPT_YN": "POLICE_RPT_YN",
-									"PURCH_DT": "PURCH_DT",
-									"ORIG_OWNER_YN": "ORIG_OWNER_YN",
-									"ANTI_BRAKES_YN": "ANTI_BRAKES_YN",
-									"CRUISE_CONT_YN": "CRUISE_CONT_YN",
-									"NUM_CYLS": "NUM_CYLS",
-									"DRIVE_TRAIN": "DRIVE_TRAIN",
-									"FUEL_SYS": "FUEL_SYS",
-									"FUEL_TYPE": "FUEL_TYPE",
-									"TRANS_TYPE": "TRANS_TYPE",
-									"VEH_SPEED": "VEH_SPEED",
-									"DOT": "DOT",
-									"TIRE_SIZE": "TIRE_SIZE",
-									"LOC_OF_TIRE": "LOC_OF_TIRE",
-									"TIRE_FAIL_TYPE": "TIRE_FAIL_TYPE",
-									"ORIG_EQUIP_YN": "ORIG_EQUIP_YN",
-									"MANUF_DT": "MANUF_DT",
-									"SEAT_TYPE": "SEAT_TYPE",
-									"RESTRAINT_TYPE": "RESTRAINT_TYE",
-									"DEALER_NAME": "DEALER_NAME",
-									"DEALER_TEL": "DEALER_TEL",
-									"DEALER_CITY": "DEALER_CITY",
-									"DEALER_STATE": "DEALER_STATE",
-									"DEALER_ZIP": "DEALER_ZIP",
-									"PROD_TYPE": "PROD_TYPE",
-									"REPAIRED_YN": "REPAIRED_YN",
-									"MEDICAL_ATTN": "MEDICAL_ATTN",
-									"VEHICLES_TOWED_YN": "VEHICLES_TOWED_YN"
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "srcComplaintsBlob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "destComplaintsSQLTempTbl",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
 						"name": "Truncate CMPL Temp",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [],
@@ -289,7 +189,7 @@
 						"type": "WebActivity",
 						"dependsOn": [
 							{
-								"activity": "Archive Source File",
+								"activity": "Send Zip to Archive",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -320,25 +220,31 @@
 						"type": "WebActivity",
 						"dependsOn": [
 							{
-								"activity": "Extract Text File To Temp Table",
-								"dependencyConditions": [
-									"Failed"
-								]
-							},
-							{
 								"activity": "Truncate CMPL Temp",
 								"dependencyConditions": [
 									"Failed"
 								]
 							},
 							{
-								"activity": "Archive Source File",
+								"activity": "Union Complaints and tmpComplaints",
 								"dependencyConditions": [
 									"Failed"
 								]
 							},
 							{
-								"activity": "Union Complaints and tmpComplaints",
+								"activity": "Move from Http to Blob as zip",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Unzip to SQL CMPL_Temp",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Send Zip to Archive",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -365,56 +271,11 @@
 						}
 					},
 					{
-						"name": "Archive Source File",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Union Complaints and tmpComplaints",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BlobSource",
-								"recursive": true
-							},
-							"sink": {
-								"type": "BlobSink"
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"dataIntegrationUnits": 0
-						},
-						"inputs": [
-							{
-								"referenceName": "srcComplaintsBlobZip",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ArchiveBlob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
 						"name": "Union Complaints and tmpComplaints",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "Extract Text File To Temp Table",
+								"activity": "Unzip to SQL CMPL_Temp",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -490,6 +351,95 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Unzip to SQL CMPL_Temp",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Move from Http to Blob as zip",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "destComplaintsSQLTempTbl",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Send Zip to Archive",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Union Complaints and tmpComplaints",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BlobSource",
+								"recursive": true
+							},
+							"sink": {
+								"type": "BlobSink"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "srcComplaintsBlobZip",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ArchiveBlob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"parameters": {
@@ -504,14 +454,14 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlob')]",
-				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl')]",
 				"[concat(variables('factoryId'), '/linkedServices/cseferlistestdb1')]",
-				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
-				"[concat(variables('factoryId'), '/datasets/ArchiveBlob')]",
 				"[concat(variables('factoryId'), '/dataflows/Union Complaints and tmpComplaints')]",
 				"[concat(variables('factoryId'), '/datasets/srcComplaintsHttpZip')]",
-				"[concat(variables('factoryId'), '/datasets/destComplaintsZipBlob')]"
+				"[concat(variables('factoryId'), '/datasets/destComplaintsZipBlob')]",
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlob')]",
+				"[concat(variables('factoryId'), '/datasets/destComplaintsSQLTempTbl')]",
+				"[concat(variables('factoryId'), '/datasets/srcComplaintsBlobZip')]",
+				"[concat(variables('factoryId'), '/datasets/ArchiveBlob')]"
 			]
 		},
 		{
@@ -1311,11 +1261,11 @@
 					},
 					{
 						"name": "INJURED",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "DEATHS",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "COMPDESC",
@@ -1343,11 +1293,11 @@
 					},
 					{
 						"name": "MILES",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "OCCURENCES",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "CDESCR",
@@ -1379,7 +1329,7 @@
 					},
 					{
 						"name": "NUM_CYLS",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "DRIVE_TRAIN",
@@ -1399,7 +1349,7 @@
 					},
 					{
 						"name": "VEH_SPEED",
-						"type": "Int64"
+						"type": "Decimal"
 					},
 					{
 						"name": "DOT",
@@ -1430,7 +1380,7 @@
 						"type": "String"
 					},
 					{
-						"name": "RESTRAINT_TYPE",
+						"name": "RESTRAINT_TYE",
 						"type": "String"
 					},
 					{
@@ -1474,7 +1424,13 @@
 					"format": {
 						"type": "TextFormat",
 						"columnDelimiter": "\t",
-						"treatEmptyAsNull": true
+						"rowDelimiter": "\n",
+						"quoteChar": "\"",
+						"nullValue": "\\N",
+						"encodingName": null,
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": false
 					},
 					"compression": {
 						"type": "ZipDeflate",

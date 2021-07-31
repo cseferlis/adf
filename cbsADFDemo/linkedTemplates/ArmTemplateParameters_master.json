@@ -54,10 +54,10 @@
 			"value": "adfdemoblob"
 		},
 		"srcComplaintsBlob_properties_typeProperties_fileName": {
-			"value": "downloads/folders/Complaints/FLAT_CMPL.zip"
+			"value": "FLAT_CMPL.zip"
 		},
 		"srcComplaintsBlob_properties_typeProperties_folderPath": {
-			"value": "adfdemoblob"
+			"value": "adfdemoblob/downloads/folders/Complaints"
 		},
 		"srcComplaintsBlobZip_properties_typeProperties_fileName": {
 			"value": "FLAT_CMPL.zip"
