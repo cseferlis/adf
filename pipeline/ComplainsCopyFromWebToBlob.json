@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "Move from Http to Blob as zip",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -273,7 +273,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "Move from Http to Blob as zip",
 				"type": "Copy",
 				"dependsOn": [
 					{
