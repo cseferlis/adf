@@ -2,12 +2,15 @@
 	"name": "Daily Update",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
 					"referenceName": "ComplainsCopyFromWebToBlob",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"receiver": "cseferlis@gmail.com"
 				}
 			}
 		],
@@ -16,16 +19,8 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2018-03-01T10:30:00.000Z",
-				"timeZone": "EST",
-				"schedule": {
-					"minutes": [
-						30
-					],
-					"hours": [
-						2
-					]
-				}
+				"startTime": "2021-08-02T22:30:00",
+				"timeZone": "Eastern Standard Time"
 			}
 		}
 	}
