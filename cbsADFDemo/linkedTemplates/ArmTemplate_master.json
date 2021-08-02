@@ -95,6 +95,10 @@
 			"type": "string",
 			"defaultValue": ""
 		},
+		"Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver": {
+			"type": "string",
+			"defaultValue": "cseferlis@gmail.com"
+		},
 		"NHTSADownload_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www-odi.nhtsa.dot.gov"
@@ -212,6 +216,9 @@
 					},
 					"srcComplaintsBlobZip_properties_typeProperties_folderPath": {
 						"value": "[parameters('srcComplaintsBlobZip_properties_typeProperties_folderPath')]"
+					},
+					"Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver": {
+						"value": "[parameters('Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver')]"
 					}
 				}
 			},
