@@ -207,7 +207,8 @@
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert"
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": true
 				},
 				"inputs": [
 					{
