@@ -95,13 +95,13 @@
 			"type": "string",
 			"defaultValue": ""
 		},
-		"Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver": {
-			"type": "string",
-			"defaultValue": "cseferlis@gmail.com"
-		},
 		"NHTSADownload_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://www-odi.nhtsa.dot.gov"
+		},
+		"Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver": {
+			"type": "string",
+			"defaultValue": "cseferlis@gmail.com"
 		}
 	},
 	"variables": {
@@ -384,7 +384,8 @@
 								"type": "AzureSqlSink",
 								"writeBehavior": "insert"
 							},
-							"enableStaging": false
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true
 						},
 						"inputs": [
 							{
@@ -1594,6 +1595,21 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/NHTSADownload')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('NHTSADownload_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/cseferlistestdb1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1708,8 +1724,7 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2021-08-02T22:30:00",
-						"timeZone": "Eastern Standard Time",
-						"schedule": {}
+						"timeZone": "Eastern Standard Time"
 					}
 				}
 			},
@@ -1767,21 +1782,6 @@
 				"[concat(variables('factoryId'), '/datasets/srcComplaints')]",
 				"[concat(variables('factoryId'), '/datasets/srcCMPL_Temp')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/NHTSADownload')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "HttpServer",
-				"typeProperties": {
-					"url": "[parameters('NHTSADownload_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "Anonymous"
-				}
-			},
-			"dependsOn": []
 		}
 	]
 }

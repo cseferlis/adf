@@ -71,11 +71,11 @@
 		"ComplaintsSourceZip_properties_typeProperties_username": {
 			"value": ""
 		},
-		"Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver": {
-			"value": "cseferlis@gmail.com"
-		},
 		"NHTSADownload_properties_typeProperties_url": {
 			"value": "https://www-odi.nhtsa.dot.gov"
+		},
+		"Daily Update_properties_ComplainsCopyFromWebToBlob_parameters_receiver": {
+			"value": "cseferlis@gmail.com"
 		},
 		"containerUri": {
 			"value": ""

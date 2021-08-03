@@ -389,7 +389,8 @@
 								"type": "AzureSqlSink",
 								"writeBehavior": "insert"
 							},
-							"enableStaging": false
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true
 						},
 						"inputs": [
 							{
@@ -492,8 +493,7 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2021-08-02T22:30:00",
-						"timeZone": "Eastern Standard Time",
-						"schedule": {}
+						"timeZone": "Eastern Standard Time"
 					}
 				}
 			},
