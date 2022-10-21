@@ -7,6 +7,10 @@
 			"url": "https://www-odi.nhtsa.dot.gov",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "ComplaintsWebIR",
+			"type": "IntegrationRuntimeReference"
 		}
 	}
 }
